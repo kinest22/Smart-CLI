@@ -12,13 +12,23 @@ namespace SmartCLI
     public static class NativeConsoleApi
     {
         private const int STD_OUTPUT_HANDLE = -11;
-        private static readonly nint _consoleHandle = default;
+
+        public const ushort COLOR_FOREGROUND_BLUE         = 0x1;
+        public const ushort COLOR_FOREGROUND_GREEN        = 0x2;
+        public const ushort COLOR_FOREGROUND_RED          = 0x4;
+        public const ushort COLOR_FOREGROUND_INTENSITY    = 0x8;                            
+        public const ushort COLOR_BACKGROUND_BLUE         = 0x10;
+        public const ushort COLOR_BACKGROUND_GREEN        = 0x20;
+        public const ushort COLOR_BACKGROUND_RED          = 0x40;
+        public const ushort COLOR_BACKGROUND_INTENSITY    = 0x80;
+        
+        private static readonly nint _stdioHandle;
 
         static NativeConsoleApi()        
-            => _consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-        
+            => _stdioHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+
         /// <summary>
-        ///     Prints chars to console screen buffer (stdout) at specified position.
+        ///     Prints chars to console stdout buffer at specified position.
         /// </summary>
         /// <param name="chars">sequence of chars to be printed.</param>
         /// <param name="x">row from top.</param>
@@ -27,13 +37,13 @@ namespace SmartCLI
         /// <returns>
         ///     number of chars written.
         /// </returns>
-        public static uint Print(string chars, short x, short y, ushort attrval)
+        public static uint PrintStdout(string chars, short x, short y, ushort attrval)
         {
             ushort[] attr = new ushort[chars.Length];
             Array.Fill(attr, attrval, 0, chars.Length);
             var coord = new COORD(x, y);
-            WriteConsoleOutputAttribute(_consoleHandle, attr, (uint)chars.Length, coord, out uint _);
-            WriteConsoleOutputCharacter(_consoleHandle, chars, (uint)chars.Length, coord, out uint written);
+            WriteConsoleOutputAttribute(_stdioHandle, attr, (uint)chars.Length, coord, out uint _);
+            WriteConsoleOutputCharacter(_stdioHandle, chars, (uint)chars.Length, coord, out uint written);
             return written;
         }
 
