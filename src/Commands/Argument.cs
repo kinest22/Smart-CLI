@@ -14,7 +14,7 @@ namespace SmartCLI.Commands
         public abstract string? Name { get; set; }
 
         /// <summary>
-        ///     description of argument.
+        ///     Description of argument.
         /// </summary>
         public abstract string? Description { get; set; }
 
@@ -24,7 +24,7 @@ namespace SmartCLI.Commands
         public abstract int Position { get; set; }
 
         /// <summary>
-        ///     Format used to parse value types arguments.
+        ///     Format used to parse value-type arguments.
         /// </summary>
         public IFormatProvider? FormatProvider { get; set; }
 
@@ -38,5 +38,10 @@ namespace SmartCLI.Commands
         /// </summary>
         /// <param name="strval"></param>
         public abstract void Parse(string strval);
+
+        /// <summary>
+        ///     In derived class validates parsed value subject to constraints (if any).
+        /// </summary>
+        public abstract void Validate();
     }
 }
