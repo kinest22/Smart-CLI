@@ -11,6 +11,10 @@ namespace SmartCLI.Commands
     /// <typeparam name="TArg">Numeric type.</typeparam>
     public class NumericArgument<TArg> : Argument where TArg : INumber<TArg>
     {
+        public NumericArgument(Action valueProvider) : base(valueProvider)
+        {
+        }
+
         /// <summary>
         ///     Name of argument.
         /// </summary>
@@ -50,7 +54,7 @@ namespace SmartCLI.Commands
         ///     Parses <see cref="Value"/> from specified string.
         /// </summary>
         /// <exception cref="FormatException"></exception>
-        public override void Parse(string strval)
+        internal override void Parse(string strval)
         {
             var fmt = FormatProvider is null
                 ? CultureInfo.InvariantCulture
@@ -69,7 +73,7 @@ namespace SmartCLI.Commands
         ///     Validates parsed argument value for min, max and allowed values if they are specified.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public override void Validate()
+        internal override void Validate()
         {
             if (MinValue is not null && Value! < MinValue)
                 throw new ArgumentException($"Value passed for <{Name}> argument should be greater or equal than {MinValue}. Value passed is {Value!}.");

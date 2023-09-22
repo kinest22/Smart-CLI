@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartCLI.Commands
 {
@@ -14,7 +11,7 @@ namespace SmartCLI.Commands
     public class NumericArgumentConfigurer<TArg> : ArgumentConfigurer<NumericArgumentConfigurer<TArg>, NumericArgument<TArg>>
         where TArg : INumber<TArg>        
     {
-        public NumericArgumentConfigurer() : base(new NumericArgument<TArg>())                 
+        public NumericArgumentConfigurer(Action valueProvider) : base(new NumericArgument<TArg>(valueProvider))                 
             => _configurer = this;
 
         /// <summary>
@@ -44,6 +41,26 @@ namespace SmartCLI.Commands
         public NumericArgumentConfigurer<TArg> WithAllowedValues(params TArg[] allowedValues)
         {
             _arg.AllowedValues = allowedValues;
+            return this;
+        }
+
+        /// <summary>
+        ///     Sets format provider to be used for parsing value.
+        /// </summary>
+        /// <returns><see cref="NumericArgumentConfigurer{TArg}"/></returns>
+        public NumericArgumentConfigurer<TArg> WithFormatProvider(IFormatProvider formatProvider)
+        {
+            _arg.FormatProvider = formatProvider;
+            return this;
+        }
+
+        /// <summary>
+        ///     Sets number style to be used for parsing value.
+        /// </summary>
+        /// <returns><see cref="NumericArgumentConfigurer{TArg}"/></returns>
+        public NumericArgumentConfigurer<TArg> WithNumberStyle(NumberStyles numberStyle)
+        {
+            _arg.NumberStyle = numberStyle;
             return this;
         }
     }

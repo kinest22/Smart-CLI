@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Text;
 
 namespace SmartCLI.Commands
 {
@@ -8,6 +9,11 @@ namespace SmartCLI.Commands
     /// </summary>
     public abstract class Argument
     {
+        private Action _valueProvider;
+
+        public Argument(Action valueProvider)
+            => _valueProvider = valueProvider;
+
         /// <summary>
         ///     Name of argument.
         /// </summary>
@@ -37,11 +43,17 @@ namespace SmartCLI.Commands
         ///     In derived class parse string-represented argument from command line to specified type.
         /// </summary>
         /// <param name="strval"></param>
-        public abstract void Parse(string strval);
+        internal abstract void Parse(string strval);
 
         /// <summary>
         ///     In derived class validates parsed value subject to constraints (if any).
         /// </summary>
-        public abstract void Validate();
+        internal abstract void Validate();
+
+        /// <summary>
+        ///     Provides value to parameters member.
+        /// </summary>
+        internal virtual void ProvideValue()
+            => _valueProvider.Invoke();
     }
 }
