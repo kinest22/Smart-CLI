@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartCLI.Commands
 {
     public class StringArgumentConfigurer : ArgumentConfigurer<StringArgumentConfigurer, StringArgument>
     {
-        public StringArgumentConfigurer(Action valueProvider) : base(new StringArgument(valueProvider))
-            => _configurer = this;
+        public StringArgumentConfigurer(Action<string> valueProvider) : base(new StringArgument((Action<ICollection<char>>)valueProvider))
+            => _configurer = this; // explicit cast is ok??
 
         public StringArgumentConfigurer WithMinLength(int length)
         {

@@ -5,15 +5,15 @@ namespace SmartCLI.Commands
     ///     Fluent configurer for argument.
     /// </summary>
     /// <typeparam name="TConfigurer">Configurer type.</typeparam>
-    /// <typeparam name="TArg">Argument type.</typeparam>
-    public class ArgumentConfigurer<TConfigurer, TArg> 
-        where TConfigurer : ArgumentConfigurer<TConfigurer, TArg>
-        where TArg : Argument
+    /// <typeparam name="TArgWrapper">Argument type.</typeparam>
+    public class ArgumentConfigurer<TConfigurer, TArgWrapper> 
+        where TConfigurer : ArgumentConfigurer<TConfigurer, TArgWrapper>
+        where TArgWrapper : Argument
     {
-        private protected readonly TArg _arg;
+        private protected readonly TArgWrapper _arg;
         private protected TConfigurer _configurer = null!;
 
-        public ArgumentConfigurer(TArg arg)
+        public ArgumentConfigurer(TArgWrapper arg)
             => _arg = arg;
 
         /// <summary>

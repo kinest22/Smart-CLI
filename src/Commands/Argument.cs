@@ -9,9 +9,9 @@ namespace SmartCLI.Commands
     /// </summary>
     public abstract class Argument
     {
-        private Action _valueProvider;
+        private protected readonly Delegate _valueProvider;
 
-        public Argument(Action valueProvider)
+        public Argument(Delegate valueProvider)
             => _valueProvider = valueProvider;
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Provides value to parameters member.
         /// </summary>
-        internal virtual void ProvideValue()
-            => _valueProvider.Invoke();
+        internal abstract void ProvideValue();
+
     }
 }

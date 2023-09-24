@@ -11,7 +11,7 @@ namespace SmartCLI.Commands
     /// <typeparam name="TArg">Numeric type.</typeparam>
     public class NumericArgument<TArg> : Argument where TArg : INumber<TArg>
     {
-        public NumericArgument(Action valueProvider) : base(valueProvider)
+        public NumericArgument(Action<TArg> valueProvider) : base(valueProvider)
         {
         }
 
@@ -68,6 +68,12 @@ namespace SmartCLI.Commands
                 ? throw new FormatException($"Cannot parse '{strval}' as {typeof(TArg).Name}.")
                 : parsed;
         }
+
+        /// <summary>
+        ///     Provides argument value to command parameters.
+        /// </summary>
+        internal override void ProvideValue()
+            => ((Action<TArg>)_valueProvider).Invoke(Value!);
 
         /// <summary>
         ///     Validates parsed argument value for min, max and allowed values if they are specified.

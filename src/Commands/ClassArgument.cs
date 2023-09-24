@@ -9,7 +9,7 @@ namespace SmartCLI.Commands
 {
     public class ClassArgument<TArg> : Argument where TArg : IParsable<TArg>
     {
-        public ClassArgument(Action valueProvider) : base(valueProvider)
+        public ClassArgument(Action<TArg> valueProvider) : base(valueProvider)
         {
         }
 
@@ -28,6 +28,10 @@ namespace SmartCLI.Commands
                 ? throw new FormatException($"Cannot parse '{strval}' as {typeof(TArg).Name}.")
                 : parsed;
         }
+
+        internal override void ProvideValue()        
+            => ((Action<TArg>)_valueProvider).Invoke(Value!);
+        
 
         internal override void Validate()
         {

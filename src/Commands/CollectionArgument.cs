@@ -1,37 +1,117 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Numerics;
+using System.Globalization;
+using System.Linq;
 
 namespace SmartCLI.Commands
 {
+    /// <summary>
+    ///     Represents collection of command parameters arguments (array, list, etc.)
+    /// </summary>
+    /// <typeparam name="TArg">Collection element type.</typeparam>
     public class CollectionArgument<TArg> : Argument, IEnumerable<TArg>
         where TArg : IParsable<TArg>
     {
-        public CollectionArgument(Action valueProvider) : base(valueProvider)
+        public CollectionArgument(Action<ICollection<TArg>> valueProvider) : base(valueProvider)
         {
         }
 
+        /// <summary>
+        ///     Name of argument.
+        /// </summary>
         public override string? Name { get; set; }
+
+        /// <summary>
+        ///     Description of argument.
+        /// </summary>
         public override string? Description { get; set; }
+
+        /// <summary>
+        ///     Position of argument in command line.
+        /// </summary>
         public override int Position { get; set; }
-        public List<TArg> Value { get; set; } = new List<TArg>(0);        
+
+        /// <summary>
+        ///     Argument value. Is subject to validation for max capacity or allowed values constraints (if any).
+        /// </summary>
+        public ICollection<TArg> Value { get; set; } = new List<TArg>(0);        
+
+        /// <summary>
+        ///     Max capacity of collection. 
+        /// </summary>
         public int? MaxCapacity { get; set; }
 
+        /// <summary>
+        ///     Set of values allowed.
+        /// </summary>
+        public TArg[]? AllowedValues { get; set; }
 
+        /// <summary>
+        ///     Parses collection elements from specified string.
+        /// </summary>
+        /// <exception cref="FormatException"></exception>
         internal override void Parse(string strval)
         {
-            throw new NotImplementedException();
+            var fmt = FormatProvider is null
+                ? CultureInfo.InvariantCulture
+                : FormatProvider;
+
+            string[] tokens = strval.Split(' ');
+            List<TArg> values = new();
+            foreach(string token in tokens)
+            {
+                var val = TArg.TryParse(strval, fmt, out TArg? parsed) is false
+                ? throw new FormatException($"Cannot parse element '{token}' from collection '{strval}' as {typeof(TArg).Name}.")
+                : parsed;
+                values.Add(val);
+            }
+            Value = values;
         }
 
+        /// <summary>
+        ///     Validates parsed argument value for min, max and allowed values if they are specified.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
         internal override void Validate()
         {
-            throw new NotImplementedException();
+            if (MaxCapacity is not null && Value.Count > MaxCapacity)
+                throw new ArgumentException($"Argument <{Name}> should contain no more than {MaxCapacity} elements, but it contains {Value.Count} elements.");
+
+
+            if (Value.Count is not 0 && AllowedValues is not null)
+            {
+                foreach (TArg val in Value)
+                {
+                    if (!AllowedValues.Contains(val))
+                    {
+                        string allowedVals = string.Empty;
+                        foreach (var alval in AllowedValues)
+                            allowedVals += alval.ToString() + ", ";
+                        throw new ArgumentException($"Values passed for <{Name}> argument should belong to the set: {{{allowedVals[..^2]}}}. One of values passed is '{val}'.");
+                    }
+                }
+            }
         }
 
+        /// <summary>
+        ///     Provides argument value to command parameters.
+        /// </summary>
+        internal override void ProvideValue()        
+            => ((Action<ICollection<TArg>>)_valueProvider).Invoke(Value);
+
+
+        /// <summary>
+        ///     Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>An enumerator that can be used to iterate through the collection.</returns>
         public IEnumerator<TArg> GetEnumerator()
             => Value.GetEnumerator();
 
+        /// <summary>
+        ///     Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>An enumerator that can be used to iterate through the collection.</returns>
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
     }

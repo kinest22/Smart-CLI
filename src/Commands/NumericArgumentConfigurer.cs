@@ -11,7 +11,7 @@ namespace SmartCLI.Commands
     public class NumericArgumentConfigurer<TArg> : ArgumentConfigurer<NumericArgumentConfigurer<TArg>, NumericArgument<TArg>>
         where TArg : INumber<TArg>        
     {
-        public NumericArgumentConfigurer(Action valueProvider) : base(new NumericArgument<TArg>(valueProvider))                 
+        public NumericArgumentConfigurer(Action<TArg> valueProvider) : base(new NumericArgument<TArg>(valueProvider))                 
             => _configurer = this;
 
         /// <summary>
