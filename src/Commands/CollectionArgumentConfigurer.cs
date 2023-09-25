@@ -33,5 +33,25 @@ namespace SmartCLI.Commands
             _arg.AllowedValues = values;
             return this;
         }
+
+        /// <summary>
+        ///     Sets additional transformation action that will be used for parsed values.
+        /// </summary>
+        /// <returns><see cref="CollectionArgumentConfigurer{TArg}"/></returns>
+        public CollectionArgumentConfigurer<TArg> WithTransformation(Func<TArg, TArg> trnasformationAction)
+        {
+            _arg.Transformer = trnasformationAction;
+            return this;
+        }
+
+        /// <summary>
+        ///     Sets additional validation action that will be called during validation.
+        /// </summary>
+        /// <returns><see cref="CollectionArgumentConfigurer{TArg}"/></returns>
+        public CollectionArgumentConfigurer<TArg> WithValidation(Predicate<TArg> validationAction)
+        {
+            _arg.Validator = validationAction;
+            return this;
+        }
     }
 }

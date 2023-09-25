@@ -48,6 +48,16 @@ namespace SmartCLI.Commands
         public TArg[]? AllowedValues { get; set; }
 
         /// <summary>
+        ///     Is used to validate constraint for each element in collection.
+        /// </summary>
+        public Predicate<TArg>? Validator { get; set; } 
+
+        /// <summary>
+        ///     Is used to transform values while parsing.
+        /// </summary>
+        public Func<TArg, TArg>? Transformer { get; set; }
+
+        /// <summary>
         ///     Parses collection elements from specified string.
         /// </summary>
         /// <exception cref="FormatException"></exception>
@@ -64,6 +74,10 @@ namespace SmartCLI.Commands
                 var val = TArg.TryParse(strval, fmt, out TArg? parsed) is false
                 ? throw new FormatException($"Cannot parse element '{token}' from collection '{strval}' as {typeof(TArg).Name}.")
                 : parsed;
+
+                if(Transformer is not null)
+                    val = Transformer.Invoke(val);
+
                 values.Add(val);
             }
             Value = values;
@@ -88,9 +102,16 @@ namespace SmartCLI.Commands
                         string allowedVals = string.Empty;
                         foreach (var alval in AllowedValues)
                             allowedVals += alval.ToString() + ", ";
-                        throw new ArgumentException($"Values passed for <{Name}> argument should belong to the set: {{{allowedVals[..^2]}}}. One of values passed is '{val}'.");
-                    }
+                        throw new ArgumentException($"Values passed for <{Name}> argument should belong to the set: {{{allowedVals[..^2]}}}. Value passed is '{val}'.");
+                    }                    
                 }
+            }
+
+            if (Validator is not null)
+            {
+                foreach (TArg val in Value)
+                    if (!Validator.Invoke(val))
+                        throw new ArgumentException($"Value '{val}' does not meet user criteria.");
             }
         }
 
