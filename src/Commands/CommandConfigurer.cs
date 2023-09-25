@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Linq.Expressions;
+using System.Numerics;
+using System.Reflection;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartCLI.Commands
 {
@@ -86,6 +86,71 @@ namespace SmartCLI.Commands
             _cmd.AwaitMark = awaitMark;
             return this;
         }
+
+        /// <summary>
+        ///     Specifies numeric argument for command params.
+        /// </summary>
+        /// <typeparam name="TArg">Argument type</typeparam>
+        /// <param name="argSelection">Argumnet property selector expression</param>
+        /// <exception cref="ArgumentException"></exception>
+        public NumericArgumentConfigurer<TArg> HasNumericArg<TArg>(Expression<Func<TParams, TArg>> argSelection)
+            where TArg : INumber<TArg>
+        {
+            if (argSelection.Body is not MemberExpression memberExpression)
+                throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
+
+            if (memberExpression.Member is not PropertyInfo accessedMember)
+                throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
+
+            var setter = accessedMember.GetSetMethod();
+            var setDelegate = (Action<TArg>)Delegate.CreateDelegate(typeof(Action<TArg>), null, setter!);
+
+            return new NumericArgumentConfigurer<TArg>(setDelegate);
+        }
+
+        /// <summary>
+        ///     Specifies string argument for command params.
+        /// </summary>
+        /// <typeparam name="TArg">Argument type</typeparam>
+        /// <param name="argSelection">Argumnet property selector expression</param>
+        /// <exception cref="ArgumentException"></exception>
+        public StringArgumentConfigurer HasStringArg(Expression<Func<TParams, string>> argSelection)
+        {
+
+            if (argSelection.Body is not MemberExpression memberExpression)
+                throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
+
+            if (memberExpression.Member is not PropertyInfo accessedMember)
+                throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
+
+            var setter = accessedMember.GetSetMethod();
+            var setDelegate = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), null, setter!);
+
+            return new StringArgumentConfigurer(setDelegate);
+        }
+
+        /// <summary>
+        ///     Specifies collection argument for command params.
+        /// </summary>
+        /// <typeparam name="TArg">Argument type</typeparam>
+        /// <param name="argSelection">Argumnet property selector expression</param>
+        /// <exception cref="ArgumentException"></exception>
+        public CollectionArgumentConfigurer<TArg> HasCollectionArg<TArg>(Expression<Func<TParams, ICollection<TArg>>> argSelection)
+            where TArg : IParsable<TArg>
+        {
+
+            if (argSelection.Body is not MemberExpression memberExpression)
+                throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
+
+            if (memberExpression.Member is not PropertyInfo accessedMember)
+                throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
+
+            var setter = accessedMember.GetSetMethod();
+            var setDelegate = (Action<ICollection<TArg>>)Delegate.CreateDelegate(typeof(Action<ICollection<TArg>>), null, setter!);
+
+            return new CollectionArgumentConfigurer<TArg>(setDelegate);
+        }
+
 
         /// <summary>
         ///     Returns configured <see cref="Command"/>.

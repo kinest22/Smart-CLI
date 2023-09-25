@@ -7,7 +7,7 @@ namespace SmartCLI.Commands
     ///     Fluent configurer for argument that reprosents collection of specified type.
     /// </summary>
     /// <typeparam name="TArg">Collection element type.</typeparam>
-    internal class CollectionArgumentConfigurer<TArg> : ArgumentConfigurer<CollectionArgumentConfigurer<TArg>, CollectionArgument<TArg>>
+    public class CollectionArgumentConfigurer<TArg> : ArgumentConfigurer<CollectionArgumentConfigurer<TArg>, CollectionArgument<TArg>>
         where TArg : IParsable<TArg>
     {
         public CollectionArgumentConfigurer(Action<ICollection<TArg>> valueProvider) : base(new CollectionArgument<TArg>(valueProvider))

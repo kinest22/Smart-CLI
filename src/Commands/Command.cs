@@ -15,6 +15,7 @@ namespace SmartCLI.Commands
         {
             _cmdCounter++;
             _paramsInitializer = paramsCreationAction;
+            Arguments = new List<Argument>();
         }
 
         /// <summary>
@@ -58,11 +59,14 @@ namespace SmartCLI.Commands
         /// </summary>
         public List<Command>? Subcommands { get; set; }
 
+        public List<Argument> Arguments { get; set; }
+
         /// <summary>
         ///     Executes the <see cref="TargetRoutine"/> of the command.
         /// </summary>
-        public void ExecuteSolely()
+        public void ExecuteSolely(string input)
         {
+
             TargetRoutine?.Invoke(_paramsInitializer());
         }
     }

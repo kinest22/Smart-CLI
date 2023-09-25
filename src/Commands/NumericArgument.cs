@@ -6,7 +6,7 @@ using System.Numerics;
 namespace SmartCLI.Commands
 {
     /// <summary>
-    ///     Represents numeric command parameters argument (int, float, etc.)
+    ///     Represents numeric-typed argumeny for command parameters (int, float, etc.)
     /// </summary>
     /// <typeparam name="TArg">Numeric type.</typeparam>
     public class NumericArgument<TArg> : Argument where TArg : INumber<TArg>

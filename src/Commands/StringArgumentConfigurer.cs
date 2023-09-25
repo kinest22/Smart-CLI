@@ -29,7 +29,7 @@ namespace SmartCLI.Commands
         /// <param name="pattern">Regex pattern.</param>
         /// <param name="regexOptions">Regex options.</param>
         /// <returns></returns>
-        public StringArgumentConfigurer WithRegex(string pattern, RegexOptions? regexOptions)
+        public StringArgumentConfigurer WithRegex(string pattern, RegexOptions? regexOptions = null)
         {
             _arg.Pattern = pattern;
             _arg.RegExOptions = regexOptions;

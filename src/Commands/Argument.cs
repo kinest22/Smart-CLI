@@ -54,6 +54,5 @@ namespace SmartCLI.Commands
         ///     Provides value to parameters member.
         /// </summary>
         internal abstract void ProvideValue();
-
     }
 }
