@@ -61,7 +61,7 @@ namespace SmartCLI.Commands
                 : FormatProvider;
 
             var nstl = NumberStyle is null
-                ? NumberStyles.None
+                ? NumberStyles.Any
                 : NumberStyle.Value; 
 
             Value = TArg.TryParse(strval, nstl, fmt, out TArg? parsed) is false
