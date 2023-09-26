@@ -45,5 +45,8 @@ namespace SmartCLI.Commands
             _arg.Position = position;
             return _configurer;
         }
+
+        public Argument GetArgument()
+            => _arg;
     }
 }

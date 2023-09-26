@@ -9,12 +9,12 @@ namespace SmartCLI.Commands
     public class Command
     {
         private static int _cmdCounter = 1;
-        private readonly Func<VoidParams> _paramsInitializer;
+        public readonly VoidParams _params;
 
-        public Command(Func<VoidParams> paramsCreationAction)
+        public Command(VoidParams @params)
         {
             _cmdCounter++;
-            _paramsInitializer = paramsCreationAction;
+            _params = @params;
             Arguments = new List<Argument>();
         }
 
@@ -59,15 +59,33 @@ namespace SmartCLI.Commands
         /// </summary>
         public List<Command>? Subcommands { get; set; }
 
+        /// <summary>
+        ///     List of arguments of command.
+        /// </summary>
         public List<Argument> Arguments { get; set; }
+
+        /// <summary>
+        ///     Parameters instance used by command as set of arguments.
+        /// </summary>
+        internal VoidParams Params => _params;
 
         /// <summary>
         ///     Executes the <see cref="TargetRoutine"/> of the command.
         /// </summary>
         public void ExecuteSolely(string input)
         {
+            char[] wschars = new char[] { ' ', '\t' };
+            int argn = Arguments.Count;
+            string[] tokens = input.Split(wschars, argn);
+            
+            for (int i = 0; i < tokens.Length; i++)
+            {
+                Arguments[i].Parse(tokens[i]);
+                Arguments[i].Validate();
+                Arguments[i].ProvideValue();
+            }
 
-            TargetRoutine?.Invoke(_paramsInitializer());
+            TargetRoutine?.Invoke(_params);
         }
     }
 }
