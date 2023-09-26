@@ -111,6 +111,28 @@ namespace SmartCLI.Commands
         }
 
         /// <summary>
+        ///     Specifies date-time argument for command params.
+        /// </summary>
+        /// <typeparam name="TArg">Argument type</typeparam>
+        /// <param name="argSelection">Argumnet property selector expression</param>
+        /// <exception cref="ArgumentException"></exception>
+        public DateTimeArgumentConfigurer HasDateTimeArg(Expression<Func<TParams, DateTime>> argSelection)
+        {
+            if (argSelection.Body is not MemberExpression memberExpression)
+                throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
+
+            if (memberExpression.Member is not PropertyInfo accessedMember)
+                throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
+
+            var setter = accessedMember.GetSetMethod();
+            var setDelegate = (Action<DateTime>)Delegate.CreateDelegate(typeof(Action<DateTime>), _cmd.Params, setter!);
+
+            var configurer = new DateTimeArgumentConfigurer(setDelegate);
+            _cmd.Arguments.Add(configurer.GetArgument());
+            return configurer;
+        }
+
+        /// <summary>
         ///     Specifies string argument for command params.
         /// </summary>
         /// <typeparam name="TArg">Argument type</typeparam>
