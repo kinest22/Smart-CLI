@@ -30,18 +30,23 @@ var testCmdSpace = CommandSpace.ConfigureNew(cmdspace =>
         .WithNumberStyle(NumberStyles.Any)
         .WithFormatProvider(CultureInfo.InvariantCulture);
 
+        // arg (date)
+        cmd.HasDateTimeArg(para => para.BirthDate)
+        .WithName("birthdate")
+        .WithDescription("date of birth.")
+        .WithStartDate(new DateTime(2000, 1, 1));
+
         // arg (string)
         cmd.HasStringArg(para => para.Email!)
         .WithName("Email")
         .WithDescription("User email (gmail).")
-        .WithRegex(@"\w*@gmail.com$")
-        .WithPosition(2);
+        .WithRegex(@"\w*@gmail.com$");
 
         // arg (collection)
         cmd.HasCollectionArg(para => para.Values)
         .WithName("numbers")
         .WithDescription("Lucky numbers.")
-        .WithAllowedValues(22, 7);
+        .WithMaxCapacity(5);
     });
 });
 
@@ -50,16 +55,16 @@ Console.WriteLine("General cmd info:");
 Console.WriteLine($"name: {cmd.Name}");
 Console.WriteLine($"desc: {cmd.Description}");
 Console.WriteLine("\nExecution result:");
-cmd.ExecuteSolely("13 kinest@gmail.com 22 7");
+cmd.ExecuteSolely("13 05.18.2001 kinest@gmail.com 22 7 30 18 88");
 
 // target routine to execute.
 static void CommandRoutine(TestParams @params)
 {
-    Console.WriteLine("this is cli test.");
-    Console.WriteLine($"Email is {@params.Email}");
     Console.WriteLine($"ID is {@params.Id}");
+    Console.WriteLine($"Birth date: {@params.BirthDate}");
+    Console.WriteLine($"Email is {@params.Email}");
     foreach(var val in @params.Values)
-        Console.WriteLine($"\tI have value {val}");
+        Console.WriteLine($"\tlucky number {val}");
 }
 
 
@@ -69,6 +74,7 @@ static void CommandRoutine(TestParams @params)
 public class TestParams : VoidParams
 {
     public int Id { get; set; }
+    public DateTime BirthDate { get; set; }
     public string? Email { get; set; }
     public ICollection<double> Values { get; set; } = Array.Empty<double>();
 }
