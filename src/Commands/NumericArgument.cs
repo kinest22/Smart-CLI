@@ -38,12 +38,12 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Minimal value allowed.
         /// </summary>
-        public TArg? MinValue { get; set; }
+        public TArg[]? MinValue { get; set; }
 
         /// <summary>
         ///     Maximum value allowed.
         /// </summary>
-        public TArg? MaxValue { get; set; }
+        public TArg[]? MaxValue { get; set; }
 
         /// <summary>
         ///     Set of values allowed.
@@ -81,11 +81,11 @@ namespace SmartCLI.Commands
         /// <exception cref="ArgumentException"></exception>
         internal override void Validate()
         {
-            if (MinValue is not null && Value! < MinValue)
-                throw new ArgumentException($"Value passed for <{Name}> argument should be greater or equal than {MinValue}. Value passed is {Value!}.");
+            if (MinValue is not null && Value! < MinValue[0])
+                throw new ArgumentException($"Value passed for <{Name}> argument should be greater or equal than {MinValue[0]}. Value passed is {Value!}.");
 
-            if (MaxValue is not null && Value! > MaxValue)
-                throw new ArgumentException($"Value passed for <{Name}> argument should be less or equal than {MaxValue}. Value passed is {Value!}.");
+            if (MaxValue is not null && Value! > MaxValue[0])
+                throw new ArgumentException($"Value passed for <{Name}> argument should be less or equal than {MaxValue[0]}. Value passed is {Value!}.");
 
             if (AllowedValues is not null && !AllowedValues.Contains(Value!))
             {

@@ -20,7 +20,7 @@ namespace SmartCLI.Commands
         /// <returns><see cref="NumericArgumentConfigurer{TArg}"/></returns>
         public NumericArgumentConfigurer<TArg> WithMinValue(TArg minValue)
         {
-            _arg.MinValue = minValue;
+            _arg.MinValue = new TArg[1] { minValue };
             return this;
         }
 
@@ -30,7 +30,7 @@ namespace SmartCLI.Commands
         /// <returns><see cref="NumericArgumentConfigurer{TArg}"/></returns>
         public NumericArgumentConfigurer<TArg> WithMaxValue(TArg maxValue)
         {
-            _arg.MaxValue = maxValue;
+            _arg.MaxValue = new TArg[1] { maxValue };
             return this;
         }
 
