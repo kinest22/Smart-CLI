@@ -71,11 +71,11 @@ namespace SmartCLI.Commands
             List<TArg> values = new();
             foreach(string token in tokens)
             {
-                var val = TArg.TryParse(strval, fmt, out TArg? parsed) is false
-                ? throw new FormatException($"Cannot parse element '{token}' from collection '{strval}' as {typeof(TArg).Name}.")
+                var val = TArg.TryParse(token, fmt, out TArg? parsed) is false
+                ? throw new FormatException($"Cannot parse collection element '{token}' as {typeof(TArg).Name}.")
                 : parsed;
 
-                if(Transformer is not null)
+                if (Transformer is not null)
                     val = Transformer.Invoke(val);
 
                 values.Add(val);

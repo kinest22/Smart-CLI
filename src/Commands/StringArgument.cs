@@ -67,7 +67,7 @@ namespace SmartCLI.Commands
         internal override void Validate()
         {
             if (MaxLength is not null && Value!.Length > MaxLength)
-                throw new ArgumentException($"{Value.Length} exceeds max length of {MaxLength}");
+                throw new ArgumentException($"{Value} exceeds max length of {MaxLength} symbols.");
 
             RegexOptions regopt = RegExOptions is null
                 ? RegexOptions.None
