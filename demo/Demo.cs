@@ -55,7 +55,7 @@ Console.WriteLine("General cmd info:");
 Console.WriteLine($"name: {cmd.Name}");
 Console.WriteLine($"desc: {cmd.Description}");
 Console.WriteLine("\nExecution result:");
-cmd.ExecuteSolely("13 05.18.2001 kinest@gmail.com 22 7 30 18 88");
+cmd.Execute("13 05.18.2001 kinest@gmail.com 22 7 30 18 88");
 
 // target routine to execute.
 static void CommandRoutine(TestParams @params)
