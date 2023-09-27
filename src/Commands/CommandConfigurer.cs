@@ -15,7 +15,10 @@ namespace SmartCLI.Commands
         private readonly Command _cmd;
 
         public CommandConfigurer()
-            => _cmd = new Command(new TParams());
+        {
+            Argument.ResetCounter();
+            _cmd = new Command(new TParams());
+        }
 
         /// <summary>
         ///     Specifies the name (identifier) of the command which is used to call the command in the CLI. 

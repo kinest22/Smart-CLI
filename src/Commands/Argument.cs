@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Text;
 
 namespace SmartCLI.Commands
 {
@@ -9,10 +8,15 @@ namespace SmartCLI.Commands
     /// </summary>
     public abstract class Argument
     {
+        private static int _counter = 0;
         private protected readonly Delegate _valueProvider;
 
         public Argument(Delegate valueProvider)
-            => _valueProvider = valueProvider;
+        {
+            Position = ++_counter;
+            Name = $"arg_{Position}";
+            _valueProvider = valueProvider;
+        }
 
         /// <summary>
         ///     Name of argument.
@@ -54,5 +58,10 @@ namespace SmartCLI.Commands
         ///     Provides value to parameters member.
         /// </summary>
         internal abstract void ProvideValue();
+
+        /// <summary>
+        ///     Resets arguments count. 
+        /// </summary>
+        internal static void ResetCounter() => _counter = 0; 
     }
 }
