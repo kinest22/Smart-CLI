@@ -55,9 +55,14 @@ namespace SmartCLI.Commands
         internal abstract void Validate();
 
         /// <summary>
-        ///     Provides value to parameters member.
+        ///     In derived class provides value to parameters member.
         /// </summary>
         internal abstract void ProvideValue();
+
+        /// <summary>
+        ///     In derived class resets argument value to deault.
+        /// </summary>
+        internal abstract void ResetValue();
 
         /// <summary>
         ///     Resets arguments count. 

@@ -64,6 +64,12 @@ namespace SmartCLI.Commands
             => ((Action<DateTime>)_valueProvider).Invoke(Value);
 
         /// <summary>
+        ///     Resets argument value.
+        /// </summary>
+        internal override void ResetValue()
+            => ((Action<DateTime>)_valueProvider).Invoke(default!);
+
+        /// <summary>
         ///     Validates parsed argument value for start and end dates if they are specified.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>

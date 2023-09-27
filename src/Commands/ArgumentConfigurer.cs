@@ -46,7 +46,10 @@ namespace SmartCLI.Commands
             return _configurer;
         }
 
-        public Argument GetArgument()
+        /// <summary>
+        ///     Returns argument configured.
+        /// </summary>
+        internal Argument GetArgument()
             => _arg;
     }
 }

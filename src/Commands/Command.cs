@@ -9,7 +9,7 @@ namespace SmartCLI.Commands
     public class Command
     {
         private static int _cmdCounter = 1;
-        public readonly VoidParams _params;
+        private readonly VoidParams _params;
 
         public Command(VoidParams @params)
         {
@@ -72,7 +72,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Executes the <see cref="TargetRoutine"/> of the command.
         /// </summary>
-        public void ExecuteSolely(string input)
+        public void Execute(string input)
         {
             char[] wschars = new char[] { ' ', '\t' };
             int argn = Arguments.Count;
@@ -86,6 +86,11 @@ namespace SmartCLI.Commands
             }
 
             TargetRoutine?.Invoke(_params);
+
+            for (int i = 0; i < tokens.Length; i++)
+            {
+                Arguments[i].ResetValue();                
+            }
         }
     }
 }

@@ -121,6 +121,11 @@ namespace SmartCLI.Commands
         internal override void ProvideValue()        
             => ((Action<ICollection<TArg>>)_valueProvider).Invoke(Value);
 
+        /// <summary>
+        ///     Resets argument value.
+        /// </summary>
+        internal override void ResetValue()
+            => ((Action<ICollection<TArg>>)_valueProvider).Invoke(default!);
 
         /// <summary>
         ///     Returns an enumerator that iterates through the collection.

@@ -62,6 +62,12 @@ namespace SmartCLI.Commands
             => ((Action<string>)_valueProvider).Invoke(Value!);
 
         /// <summary>
+        ///     Resets argument value.
+        /// </summary>
+        internal override void ResetValue()
+            => ((Action<string>)_valueProvider).Invoke(default!);
+
+        /// <summary>
         ///     Validates parsed argument value for max length.
         /// </summary>
         internal override void Validate()
