@@ -20,7 +20,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Argument name.
         /// </summary>
-        public override string? Name { get; set; }
+        public override string? Name { get; internal set; }
 
         /// <summary>
         ///     Argument description.
@@ -30,7 +30,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Argumnet position.
         /// </summary>
-        public override int Position { get; set; }
+        public override int Position { get; internal set; }
         
         /// <summary>
         ///     Argumnet value.

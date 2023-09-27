@@ -52,8 +52,7 @@ namespace SmartCLI.Commands
         public CommandConfigurer<TParams> IsSubcommandOf(Command parentCmd)
         {
             _cmd.ParentCommand = parentCmd;
-            parentCmd.Subcommands ??= new();
-            parentCmd.Subcommands.Add(_cmd);
+            parentCmd.AddSubcommand(_cmd);
             return this;
         }
 
@@ -109,7 +108,7 @@ namespace SmartCLI.Commands
             var setDelegate = (Action<TArg>)Delegate.CreateDelegate(typeof(Action<TArg>), _cmd.Params, setter!);
 
             var configurer = new NumericArgumentConfigurer<TArg>(setDelegate);
-            _cmd.Arguments.Add(configurer.GetArgument());
+            _cmd.AddArgument(configurer.GetArgument());
             return configurer;
         }
 
@@ -131,7 +130,7 @@ namespace SmartCLI.Commands
             var setDelegate = (Action<DateTime>)Delegate.CreateDelegate(typeof(Action<DateTime>), _cmd.Params, setter!);
 
             var configurer = new DateTimeArgumentConfigurer(setDelegate);
-            _cmd.Arguments.Add(configurer.GetArgument());
+            _cmd.AddArgument(configurer.GetArgument());
             return configurer;
         }
 
@@ -154,7 +153,7 @@ namespace SmartCLI.Commands
             var setDelegate = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), _cmd.Params, setter!);
 
             var configurer = new StringArgumentConfigurer(setDelegate);
-            _cmd.Arguments.Add(configurer.GetArgument());
+            _cmd.AddArgument(configurer.GetArgument());
             return configurer;
         }
 
@@ -177,7 +176,7 @@ namespace SmartCLI.Commands
             var setDelegate = (Action<ICollection<TArg>>)Delegate.CreateDelegate(typeof(Action<ICollection<TArg>>), _cmd.Params, setter!);
 
             var configurer = new CollectionArgumentConfigurer<TArg>(setDelegate);
-            _cmd.Arguments.Add(configurer.GetArgument());
+            _cmd.AddArgument(configurer.GetArgument());
             return configurer;
         }
 

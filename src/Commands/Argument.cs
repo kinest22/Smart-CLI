@@ -21,7 +21,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Name of argument.
         /// </summary>
-        public abstract string? Name { get; set; }
+        public abstract string? Name { get; internal set; }
 
         /// <summary>
         ///     Description of argument.
@@ -31,17 +31,17 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Position of argument in command line.
         /// </summary>
-        public abstract int Position { get; set; }
+        public abstract int Position { get; internal set; }
 
         /// <summary>
         ///     Format used to parse value-type arguments.
         /// </summary>
-        public IFormatProvider? FormatProvider { get; set; }
+        public IFormatProvider? FormatProvider { get; internal set; }
 
         /// <summary>
         ///     Number style bitmask used to format numeric arguments.
         /// </summary>
-        public NumberStyles? NumberStyle { get; set; }
+        public NumberStyles? NumberStyle { get; internal set; }
 
         /// <summary>
         ///     In derived class parse string-represented argument from command line to specified type.

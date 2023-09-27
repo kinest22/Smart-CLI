@@ -20,7 +20,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Name of argument.
         /// </summary>
-        public override string? Name { get; set; }
+        public override string? Name { get; internal set; }
 
         /// <summary>
         ///     Description of argument.
@@ -30,7 +30,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Position of argument in command line.
         /// </summary>
-        public override int Position { get; set; }
+        public override int Position { get; internal set; }
 
         /// <summary>
         ///     Argument value. Is subject to validation for max capacity or allowed values constraints (if any).

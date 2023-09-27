@@ -10,12 +10,17 @@ namespace SmartCLI.Commands
     {
         private static int _cmdCounter = 1;
         private readonly VoidParams _params;
+        private readonly List<Argument> _args;
+        private readonly List<Command> _subcmds;
+
 
         public Command(VoidParams @params)
         {
             _cmdCounter++;
             _params = @params;
-            Arguments = new List<Argument>();
+            _params.AddCommand(this);
+            _args = new List<Argument>();
+            _subcmds = new List<Command>();
         }
 
         /// <summary>
@@ -52,17 +57,17 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Command to which the current command is considered to be a child command.
         /// </summary>
-        public Command? ParentCommand { get; set; }
+        public Command? ParentCommand { get; internal set; }
 
         /// <summary>
         ///     Set of subcommands for the current command.
         /// </summary>
-        public List<Command>? Subcommands { get; set; }
+        public IReadOnlyList<Command> Subcommands { get => _subcmds; }
 
         /// <summary>
         ///     List of arguments of command.
         /// </summary>
-        public List<Argument> Arguments { get; set; }
+        public IReadOnlyList<Argument> Arguments { get => _args; }
 
         /// <summary>
         ///     Parameters instance used by command as set of arguments.
@@ -92,5 +97,19 @@ namespace SmartCLI.Commands
                 Arguments[i].ResetValue();                
             }
         }
+
+        /// <summary>
+        ///     Adds specified command as command's subcommand.
+        /// </summary>
+        /// <param name="cmd"></param>
+        internal void AddSubcommand(Command cmd)
+            => _subcmds.Add(cmd);
+
+        /// <summary>
+        ///     Adds specified argument to the collection of command arguments.
+        /// </summary>
+        /// <param name="arg"></param>
+        internal void AddArgument(Argument arg)
+            => _args.Add(arg);
     }
 }
