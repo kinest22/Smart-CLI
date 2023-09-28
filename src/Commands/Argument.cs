@@ -14,7 +14,7 @@ namespace SmartCLI.Commands
         public Argument(Delegate valueProvider)
         {
             Position = ++_counter;
-            Name = $"arg_{Position}";
+            Name = $"ARG_{Position}";
             _valueProvider = valueProvider;
         }
 
