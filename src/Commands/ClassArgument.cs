@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 namespace SmartCLI.Commands
 {
     /// <summary>
-    ///     Represents class-typed argument for command parameters.
+    ///     Represents class-typed argument of command.
     /// </summary>
     /// <typeparam name="TArg"></typeparam>
-    public class ClassArgument<TArg> : Argument where TArg : class, IParsable<TArg>
+    public class ClassArgument<TArg> : CommandParameter where TArg : class, IParsable<TArg>
     {
         public ClassArgument(Action<TArg> valueProvider) : base(valueProvider)
         {

@@ -8,7 +8,7 @@ namespace SmartCLI.Commands
     ///     Fluent configurer for numeric-typed argument.
     /// </summary>
     /// <typeparam name="TArg">Numeric argument type.</typeparam>
-    public class NumericArgumentConfigurer<TArg> : ArgumentConfigurer<NumericArgumentConfigurer<TArg>, NumericArgument<TArg>>
+    public class NumericArgumentConfigurer<TArg> : CommandParameterConfigurer<NumericArgumentConfigurer<TArg>, NumericArgument<TArg>>
         where TArg : INumber<TArg>        
     {
         public NumericArgumentConfigurer(Action<TArg> valueProvider) : base(new NumericArgument<TArg>(valueProvider))                 

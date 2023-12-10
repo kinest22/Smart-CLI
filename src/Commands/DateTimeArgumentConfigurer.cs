@@ -7,7 +7,7 @@ namespace SmartCLI.Commands
     ///     Fluent configurer for DateTime-typed argument.
     /// </summary>
     /// <typeparam name="TArg">Numeric argument type.</typeparam>
-    public class DateTimeArgumentConfigurer : ArgumentConfigurer<DateTimeArgumentConfigurer, DateTimeArgument>
+    public class DateTimeArgumentConfigurer : CommandParameterConfigurer<DateTimeArgumentConfigurer, DateTimeArgument>
     {
         public DateTimeArgumentConfigurer(Action<DateTime> valueProvider) : base(new DateTimeArgument(valueProvider))
             => _configurer = this;

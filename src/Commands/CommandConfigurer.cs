@@ -16,7 +16,7 @@ namespace SmartCLI.Commands
 
         public CommandConfigurer()
         {
-            Argument.ResetCounter();
+            CommandParameter.ResetCounter();
             _cmd = new Command(new TParams());
         }
 

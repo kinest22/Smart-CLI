@@ -10,7 +10,7 @@ namespace SmartCLI.Commands
     {
         private static int _cmdCounter = 1;
         private readonly VoidParams _params;
-        private readonly List<Argument> _args;
+        private readonly List<CommandParameter> _args;
         private readonly List<Command> _subcmds;
 
 
@@ -19,7 +19,7 @@ namespace SmartCLI.Commands
             _cmdCounter++;
             _params = @params;
             _params.AddCommand(this);
-            _args = new List<Argument>();
+            _args = new List<CommandParameter>();
             _subcmds = new List<Command>();
         }
 
@@ -67,7 +67,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     List of arguments of command.
         /// </summary>
-        public IReadOnlyList<Argument> Arguments { get => _args; }
+        public IReadOnlyList<CommandParameter> Arguments { get => _args; }
 
         /// <summary>
         ///     Parameters instance used by command as set of arguments.
@@ -109,7 +109,7 @@ namespace SmartCLI.Commands
         ///     Adds specified argument to the collection of command arguments.
         /// </summary>
         /// <param name="arg"></param>
-        internal void AddArgument(Argument arg)
+        internal void AddArgument(CommandParameter arg)
             => _args.Add(arg);
     }
 }

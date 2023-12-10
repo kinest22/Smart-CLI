@@ -7,7 +7,7 @@ namespace SmartCLI.Commands
     /// <summary>
     ///     Fluent configurer for string-typed argument.
     /// </summary>
-    public class StringArgumentConfigurer : ArgumentConfigurer<StringArgumentConfigurer, StringArgument>
+    public class StringArgumentConfigurer : CommandParameterConfigurer<StringArgumentConfigurer, StringArgument>
     {
         public StringArgumentConfigurer(Action<string> valueProvider) : base(new StringArgument(valueProvider))
             => _configurer = this;

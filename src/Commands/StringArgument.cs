@@ -6,9 +6,9 @@ using System.Text.RegularExpressions;
 namespace SmartCLI.Commands
 {
     /// <summary>
-    ///     Represents string-typed argument for command parameters
+    ///     Represents string-typed argument of command.
     /// </summary>
-    public class StringArgument : Argument
+    public class StringArgument : CommandParameter
     {
         public StringArgument(Action<string> valueProvider) : base(valueProvider)
         {            

@@ -22,7 +22,7 @@ var testCmdSpace = CommandSpace.ConfigureNew(cmdspace =>
         .HasRoutine(para => CommandRoutine(para))
         .IsHidden();
 
-        // arg (numeric)
+        // arg 1 (numeric)
         cmd.HasNumericArg(para => para.Id)
         .WithName("ID")
         .WithDescription("user ID.")
@@ -30,23 +30,24 @@ var testCmdSpace = CommandSpace.ConfigureNew(cmdspace =>
         .WithNumberStyle(NumberStyles.Any)
         .WithFormatProvider(CultureInfo.InvariantCulture);
 
-        // arg (date)
+        // arg 2 (date)
         cmd.HasDateTimeArg(para => para.BirthDate)
         .WithName("birthdate")
         .WithDescription("date of birth.")
         .WithStartDate(new DateTime(2000, 1, 1));
 
-        // arg (string)
+        // arg 3 (string)
         cmd.HasStringArg(para => para.Email!)
         .WithName("Email")
         .WithDescription("User email (gmail).")
         .WithRegex(@"\w*@gmail.com$");
 
-        // arg (collection)
+        // arg 4 (collection)
         cmd.HasCollectionArg(para => para.Values)
         .WithName("numbers")
         .WithDescription("Lucky numbers.")
-        .WithMaxCapacity(5);
+        .WithMaxCapacity(5)
+        .WithValidation(d => d <= 100);
     });
 });
 

@@ -2,22 +2,22 @@
 namespace SmartCLI.Commands
 {
     /// <summary>
-    ///     Fluent configurer for argument.
+    ///     Command parameter fluent configurer.
     /// </summary>
     /// <typeparam name="TConfigurer">Configurer type.</typeparam>
-    /// <typeparam name="TArgWrapper">Argument type.</typeparam>
-    public class ArgumentConfigurer<TConfigurer, TArgWrapper> 
-        where TConfigurer : ArgumentConfigurer<TConfigurer, TArgWrapper>
-        where TArgWrapper : Argument
+    /// <typeparam name="TArgWrapper">Parameter type.</typeparam>
+    public class CommandParameterConfigurer<TConfigurer, TArgWrapper> 
+        where TConfigurer : CommandParameterConfigurer<TConfigurer, TArgWrapper>
+        where TArgWrapper : CommandParameter
     {
         private protected readonly TArgWrapper _arg;
         private protected TConfigurer _configurer = null!;
 
-        public ArgumentConfigurer(TArgWrapper arg)
+        public CommandParameterConfigurer(TArgWrapper arg)
             => _arg = arg;
 
         /// <summary>
-        ///     Sets the name for the argument.
+        ///     Sets the name for the command parameter.
         /// </summary>
         /// <returns><see cref="TConfigurer"/></returns>
         public TConfigurer WithName(string name)
@@ -27,7 +27,7 @@ namespace SmartCLI.Commands
         }
 
         /// <summary>
-        ///     Sets description for the argument.
+        ///     Sets description for the command parameter.
         /// </summary>
         /// <returns><see cref="TConfigurer"/></returns>
         public TConfigurer WithDescription(string description)
@@ -37,7 +37,7 @@ namespace SmartCLI.Commands
         }
 
         /// <summary>
-        ///     Sets position for the argument in command-line input.
+        ///     Sets position for the command parameter in command-line input.
         /// </summary>
         /// <returns><see cref="TConfigurer"/></returns>
         public TConfigurer WithPosition(int position)
@@ -47,9 +47,9 @@ namespace SmartCLI.Commands
         }
 
         /// <summary>
-        ///     Returns argument configured.
+        ///     Returns command parameter configured.
         /// </summary>
-        internal Argument GetArgument()
+        internal CommandParameter GetArgument()
             => _arg;
     }
 }

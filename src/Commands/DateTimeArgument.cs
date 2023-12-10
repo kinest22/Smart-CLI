@@ -4,9 +4,9 @@ using System.Globalization;
 namespace SmartCLI.Commands
 {
     /// <summary>
-    ///     Represents DateTime-typed argument for command parameters
+    ///     Represents DateTime-typed argument of command.
     /// </summary>
-    public class DateTimeArgument : Argument
+    public class DateTimeArgument : CommandParameter
     {
         public DateTimeArgument(Action<DateTime> valueProvider) : base(valueProvider)
         {

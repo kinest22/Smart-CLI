@@ -7,10 +7,10 @@ using System.Linq;
 namespace SmartCLI.Commands
 {
     /// <summary>
-    ///     Represents collection of command parameters arguments (array, list, etc.)
+    ///     Represents collection-typed argument (array, list, etc.) of command. 
     /// </summary>
     /// <typeparam name="TArg">Collection element type.</typeparam>
-    public class CollectionArgument<TArg> : Argument, IEnumerable<TArg>
+    public class CollectionArgument<TArg> : CommandParameter, IEnumerable<TArg>
         where TArg : IParsable<TArg>
     {
         public CollectionArgument(Action<ICollection<TArg>> valueProvider) : base(valueProvider)
