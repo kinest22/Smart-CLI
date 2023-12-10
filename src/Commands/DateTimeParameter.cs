@@ -4,31 +4,31 @@ using System.Globalization;
 namespace SmartCLI.Commands
 {
     /// <summary>
-    ///     Represents DateTime-typed argument of command.
+    ///     Represents DateTime-typed parameter of command.
     /// </summary>
-    public class DateTimeArgument : CommandParameter
+    public class DateTimeParameter : CommandParameter
     {
-        public DateTimeArgument(Action<DateTime> valueProvider) : base(valueProvider)
+        public DateTimeParameter(Action<DateTime> valueProvider) : base(valueProvider)
         {
         }
 
         /// <summary>
-        ///     Name of argument.
+        ///     Name of parameter.
         /// </summary>
         public override string? Name { get; internal set; }
 
         /// <summary>
-        ///     Description of argument.
+        ///     Description of parameter.
         /// </summary>
         public override string? Description { get; set; }
 
         /// <summary>
-        ///     Position of argument in command line.
+        ///     Position of parameter in command line.
         /// </summary>
         public override int Position { get; internal set; }
 
         /// <summary>
-        ///     Argument value. Is subject to validation for period constraints (if any).
+        ///     Parameter value. Is subject to validation for period constraints (if any).
         /// </summary>
         public DateTime Value { get; set; }
 
@@ -58,28 +58,28 @@ namespace SmartCLI.Commands
         }
 
         /// <summary>
-        ///     Provides argument value to command parameters.
+        ///     Provides parameter value to command parameters.
         /// </summary>
         internal override void ProvideValue()
             => ((Action<DateTime>)_valueProvider).Invoke(Value);
 
         /// <summary>
-        ///     Resets argument value.
+        ///     Resets parameter value.
         /// </summary>
         internal override void ResetValue()
             => ((Action<DateTime>)_valueProvider).Invoke(default!);
 
         /// <summary>
-        ///     Validates parsed argument value for start and end dates if they are specified.
+        ///     Validates parsed parameter value for start and end dates if they are specified.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         internal override void Validate()
         {
             if (StartDate is not null && Value < StartDate)
-                throw new ArgumentException($"Value passed for <{Name}> argument should be greater or equal than {StartDate}. Value passed is {Value}.");
+                throw new ArgumentException($"Value passed for <{Name}> parameter should be greater or equal than {StartDate}. Value passed is {Value}.");
 
             if (EndDate is not null && Value > EndDate)
-                throw new ArgumentException($"Value passed for <{Name}> argument should be less or equal than {EndDate}. Value passed is {Value}.");
+                throw new ArgumentException($"Value passed for <{Name}> parameter should be less or equal than {EndDate}. Value passed is {Value}.");
         }
     }
 }

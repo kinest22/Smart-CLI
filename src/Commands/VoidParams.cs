@@ -3,7 +3,7 @@
 namespace SmartCLI.Commands
 {
     /// <summary>
-    ///     Represents base class for specific command parameters with necessary arguments.
+    ///     Represents base class for specific command parameters with necessary arguments and options.
     /// </summary>
     public class VoidParams 
     {

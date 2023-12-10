@@ -1,46 +1,44 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Text.RegularExpressions;
 
 namespace SmartCLI.Commands
 {
     /// <summary>
-    ///     Represents string-typed argument of command.
+    ///     Represents string-typed parameter of command.
     /// </summary>
-    public class StringArgument : CommandParameter
+    public class StringParameter : CommandParameter
     {
-        public StringArgument(Action<string> valueProvider) : base(valueProvider)
+        public StringParameter(Action<string> valueProvider) : base(valueProvider)
         {            
         }
 
         /// <summary>
-        ///     Argument name.
+        ///     Parameter name.
         /// </summary>
         public override string? Name { get; internal set; }
 
         /// <summary>
-        ///     Argument description.
+        ///     Parameter description.
         /// </summary>
         public override string? Description { get; set; }
-        
+
         /// <summary>
-        ///     Argument position in command-line.
+        ///     Parameter position in command-line.
         /// </summary>
         public override int Position { get; internal set; }
 
         /// <summary>
-        ///     Argumnet value;
+        ///     Parameter value;
         /// </summary>
         public string? Value { get; set; }
 
         /// <summary>
-        ///     Argument length max value.
+        ///     Parameter length max value.
         /// </summary>
         public int? MaxLength { get; set; }
 
         /// <summary>
-        ///     Regular expression pattern. Used to validate passed argument value for specific predefined pattern.
+        ///     Regular expression pattern. Used to validate passed parameter value for specific predefined pattern.
         /// </summary>
         public string? Pattern { get; set; }
 
@@ -56,19 +54,19 @@ namespace SmartCLI.Commands
             => Value = strval;
 
         /// <summary>
-        ///     Provides argument value to command parameters.
+        ///     Provides Parameter value to command parameters.
         /// </summary>
         internal override void ProvideValue()        
             => ((Action<string>)_valueProvider).Invoke(Value!);
 
         /// <summary>
-        ///     Resets argument value.
+        ///     Resets parameter value.
         /// </summary>
         internal override void ResetValue()
             => ((Action<string>)_valueProvider).Invoke(default!);
 
         /// <summary>
-        ///     Validates parsed argument value for max length.
+        ///     Validates parsed parameter value for max length.
         /// </summary>
         internal override void Validate()
         {

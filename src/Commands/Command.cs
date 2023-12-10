@@ -70,7 +70,7 @@ namespace SmartCLI.Commands
         public IReadOnlyList<CommandParameter> Arguments { get => _args; }
 
         /// <summary>
-        ///     Parameters instance used by command as set of arguments.
+        ///     Parameters instance used by command as set of arguments and options.
         /// </summary>
         internal VoidParams Params => _params;
 

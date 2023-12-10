@@ -8,39 +8,39 @@ using System.Threading.Tasks;
 namespace SmartCLI.Commands
 {
     /// <summary>
-    ///     Represents class-typed argument of command.
+    ///     Represents class-typed parameter of command.
     /// </summary>
-    /// <typeparam name="TArg"></typeparam>
-    public class ClassArgument<TArg> : CommandParameter where TArg : class, IParsable<TArg>
+    /// <typeparam name="TParam">Parameter type.</typeparam>
+    public class ClassParameter<TParam> : CommandParameter where TParam : class, IParsable<TParam>
     {
-        public ClassArgument(Action<TArg> valueProvider) : base(valueProvider)
+        public ClassParameter(Action<TParam> valueProvider) : base(valueProvider)
         {
         }
 
         /// <summary>
-        ///     Argument name.
+        ///     Parameter name.
         /// </summary>
         public override string? Name { get; internal set; }
 
         /// <summary>
-        ///     Argument description.
+        ///     Parameter description.
         /// </summary>
         public override string? Description { get; set; }
 
         /// <summary>
-        ///     Argumnet position.
+        ///     Parameter position.
         /// </summary>
         public override int Position { get; internal set; }
-        
+
         /// <summary>
-        ///     Argumnet value.
+        ///     Parameter value.
         /// </summary>
-        public TArg? Value { get; set; }
+        public TParam? Value { get; set; }
 
         /// <summary>
         ///     Parses <see cref="Value"/> from specified string.
         /// </summary>
-        /// <param name="strval"></param>
+        /// <param name="strval">string value.</param>
         /// <exception cref="FormatException"></exception>
         internal override void Parse(string strval)
         {
@@ -48,25 +48,25 @@ namespace SmartCLI.Commands
                 ? CultureInfo.InvariantCulture
                 : FormatProvider;
 
-            Value = TArg.TryParse(strval, fmt, out TArg? parsed) is false
-                ? throw new FormatException($"Cannot parse '{strval}' as {typeof(TArg).Name}.")
+            Value = TParam.TryParse(strval, fmt, out TParam? parsed) is false
+                ? throw new FormatException($"Cannot parse '{strval}' as {typeof(TParam).Name}.")
                 : parsed;
         }
 
         /// <summary>
-        ///     Provides argument value to command parameters.
+        ///     Provides parameter value to command parameters.
         /// </summary>
         internal override void ProvideValue()        
-            => ((Action<TArg>)_valueProvider).Invoke(Value!);
+            => ((Action<TParam>)_valueProvider).Invoke(Value!);
 
         /// <summary>
-        ///     Resets argument value.
+        ///     Resets parameter value.
         /// </summary>
         internal override void ResetValue()
-            => ((Action<TArg>)_valueProvider).Invoke(default!);
+            => ((Action<TParam>)_valueProvider).Invoke(default!);
 
         /// <summary>
-        ///     Validates parsed argument value for constraints.
+        ///     Validates parsed parameter value for constraints.
         /// </summary>
         internal override void Validate()
         {
