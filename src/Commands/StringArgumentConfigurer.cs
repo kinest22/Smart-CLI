@@ -7,9 +7,9 @@ namespace SmartCLI.Commands
     /// <summary>
     ///     Fluent configurer for string-typed parameter.
     /// </summary>
-    public class StringParameterConfigurer : CommandParameterConfigurer<StringParameterConfigurer, StringParameter>
+    public class StringArgumentConfigurer : ArgumentConfigurer<StringArgumentConfigurer, StringParameter>
     {
-        public StringParameterConfigurer(Action<string> valueProvider) : base(new StringParameter(valueProvider))
+        public StringArgumentConfigurer(Action<string> valueProvider) : base(new StringParameter(valueProvider))
             => _configurer = this;
 
         /// <summary>
@@ -17,7 +17,7 @@ namespace SmartCLI.Commands
         /// </summary>
         /// <param name="length">Maximum string length</param>
         /// <returns></returns>
-        public StringParameterConfigurer WithMaxLength(int length)
+        public StringArgumentConfigurer WithMaxLength(int length)
         {
             _param.MaxLength = length;
             return this;
@@ -29,7 +29,7 @@ namespace SmartCLI.Commands
         /// <param name="pattern">Regex pattern.</param>
         /// <param name="regexOptions">Regex options.</param>
         /// <returns></returns>
-        public StringParameterConfigurer WithRegex(string pattern, RegexOptions? regexOptions = null)
+        public StringArgumentConfigurer WithRegex(string pattern, RegexOptions? regexOptions = null)
         {
             _param.Pattern = pattern;
             _param.RegExOptions = regexOptions;

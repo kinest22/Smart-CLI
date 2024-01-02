@@ -6,10 +6,10 @@ namespace SmartCLI.Commands
     ///     Fluent configurer for command parameter that represents class of specified type.
     /// </summary>
     /// <typeparam name="TClass">Class parameter type.</typeparam>
-    public class ClassParameterConfigurer<TClass> : CommandParameterConfigurer<ClassParameterConfigurer<TClass>, ClassParameter<TClass>>
+    public class ClassArgumentConfigurer<TClass> : ArgumentConfigurer<ClassArgumentConfigurer<TClass>, ClassParameter<TClass>>
         where TClass : class, IParsable<TClass>
     {
-        public ClassParameterConfigurer(ClassParameter<TClass> arg) : base(arg)
+        public ClassArgumentConfigurer(ClassParameter<TClass> arg) : base(arg)
         {
         }
     }

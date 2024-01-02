@@ -6,16 +6,16 @@ namespace SmartCLI.Commands
     /// <summary>
     ///     Fluent configurer for DateTime-typed parameter.
     /// </summary>
-    public class DateTimeParameterConfigurer : CommandParameterConfigurer<DateTimeParameterConfigurer, DateTimeParameter>
+    public class DateTimeArgumentConfigurer : ArgumentConfigurer<DateTimeArgumentConfigurer, DateTimeParameter>
     {
-        public DateTimeParameterConfigurer(Action<DateTime> valueProvider) : base(new DateTimeParameter(valueProvider))
+        public DateTimeArgumentConfigurer(Action<DateTime> valueProvider) : base(new DateTimeParameter(valueProvider))
             => _configurer = this;
 
         /// <summary>
         ///     Sets parameter's start date.
         /// </summary>
-        /// <returns><see cref="DateTimeParameterConfigurer"/></returns>
-        public DateTimeParameterConfigurer WithStartDate(DateTime startDate)
+        /// <returns><see cref="DateTimeArgumentConfigurer"/></returns>
+        public DateTimeArgumentConfigurer WithStartDate(DateTime startDate)
         {
             _param.StartDate = startDate;
             return this;
@@ -24,8 +24,8 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Sets parameter's end date.
         /// </summary>
-        /// <returns><see cref="DateTimeParameterConfigurer"/></returns>
-        public DateTimeParameterConfigurer WithEndDate(DateTime endDate)
+        /// <returns><see cref="DateTimeArgumentConfigurer"/></returns>
+        public DateTimeArgumentConfigurer WithEndDate(DateTime endDate)
         {
             _param.EndDate = endDate;
             return this;

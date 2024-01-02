@@ -7,10 +7,10 @@ namespace SmartCLI.Commands
     ///     Fluent configurer for parameter that represents collection of specified type.
     /// </summary>
     /// <typeparam name="TParam">Collection element type.</typeparam>
-    public class CollectionParameterConfigurer<TParam> : CommandParameterConfigurer<CollectionParameterConfigurer<TParam>, CollectionParameter<TParam>>
+    public class CollectionArgumentConfigurer<TParam> : ArgumentConfigurer<CollectionArgumentConfigurer<TParam>, CollectionParameter<TParam>>
         where TParam : IParsable<TParam>
     {
-        public CollectionParameterConfigurer(Action<ICollection<TParam>> valueProvider) : base(new CollectionParameter<TParam>(valueProvider))
+        public CollectionArgumentConfigurer(Action<ICollection<TParam>> valueProvider) : base(new CollectionParameter<TParam>(valueProvider))
             => _configurer = this;
         
         /// <summary>
@@ -18,7 +18,7 @@ namespace SmartCLI.Commands
         /// </summary>
         /// <param name="capacity"></param>
         /// <returns></returns>
-        public CollectionParameterConfigurer<TParam> WithMaxCapacity(int capacity)
+        public CollectionArgumentConfigurer<TParam> WithMaxCapacity(int capacity)
         {
             _param.MaxCapacity = capacity;
             return this;
@@ -27,8 +27,8 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Sets parameter's allowed values.
         /// </summary>
-        /// <returns><see cref="CollectionParameterConfigurer{TArg}"/></returns>
-        public CollectionParameterConfigurer<TParam> WithAllowedValues(params TParam[] values)
+        /// <returns><see cref="CollectionArgumentConfigurer{TArg}"/></returns>
+        public CollectionArgumentConfigurer<TParam> WithAllowedValues(params TParam[] values)
         {
             _param.AllowedValues = values;
             return this;
@@ -37,8 +37,8 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Sets additional transformation action that will be used for parsed values.
         /// </summary>
-        /// <returns><see cref="CollectionParameterConfigurer{TArg}"/></returns>
-        public CollectionParameterConfigurer<TParam> WithTransformation(Func<TParam, TParam> trnasformationAction)
+        /// <returns><see cref="CollectionArgumentConfigurer{TArg}"/></returns>
+        public CollectionArgumentConfigurer<TParam> WithTransformation(Func<TParam, TParam> trnasformationAction)
         {
             _param.Transformer = trnasformationAction;
             return this;
@@ -47,11 +47,11 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Sets additional validation action that will be called during validation.
         /// </summary>
-        /// <returns><see cref="CollectionParameterConfigurer{TArg}"/></returns>
-        public CollectionParameterConfigurer<TParam> WithValidation(Predicate<TParam> validationAction)
+        /// <returns><see cref="CollectionArgumentConfigurer{TArg}"/></returns>
+        public CollectionArgumentConfigurer<TParam> WithValidation(Predicate<TParam> validationAction)
         {
             _param.Validator = validationAction;
             return this;
-        }
+        }        
     }
 }

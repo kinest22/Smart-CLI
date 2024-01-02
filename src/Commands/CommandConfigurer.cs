@@ -95,7 +95,7 @@ namespace SmartCLI.Commands
         /// <typeparam name="TArg">Argument type</typeparam>
         /// <param name="argSelection">Argumnet property selector expression</param>
         /// <exception cref="ArgumentException"></exception>
-        public NumericParameterConfigurer<TArg> HasNumericArg<TArg>(Expression<Func<TParams, TArg>> argSelection)
+        public NumericArgumentConfigurer<TArg> HasNumericArg<TArg>(Expression<Func<TParams, TArg>> argSelection)
             where TArg : INumber<TArg>
         {
             if (argSelection.Body is not MemberExpression memberExpression)
@@ -107,7 +107,7 @@ namespace SmartCLI.Commands
             var setter = accessedMember.GetSetMethod();
             var setDelegate = (Action<TArg>)Delegate.CreateDelegate(typeof(Action<TArg>), _cmd.Params, setter!);
 
-            var configurer = new NumericParameterConfigurer<TArg>(setDelegate);
+            var configurer = new NumericArgumentConfigurer<TArg>(setDelegate);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
         }
@@ -118,7 +118,7 @@ namespace SmartCLI.Commands
         /// <typeparam name="TArg">Argument type</typeparam>
         /// <param name="argSelection">Argumnet property selector expression</param>
         /// <exception cref="ArgumentException"></exception>
-        public DateTimeParameterConfigurer HasDateTimeArg(Expression<Func<TParams, DateTime>> argSelection)
+        public DateTimeArgumentConfigurer HasDateTimeArg(Expression<Func<TParams, DateTime>> argSelection)
         {
             if (argSelection.Body is not MemberExpression memberExpression)
                 throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
@@ -129,7 +129,7 @@ namespace SmartCLI.Commands
             var setter = accessedMember.GetSetMethod();
             var setDelegate = (Action<DateTime>)Delegate.CreateDelegate(typeof(Action<DateTime>), _cmd.Params, setter!);
 
-            var configurer = new DateTimeParameterConfigurer(setDelegate);
+            var configurer = new DateTimeArgumentConfigurer(setDelegate);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
         }
@@ -140,7 +140,7 @@ namespace SmartCLI.Commands
         /// <typeparam name="TArg">Argument type</typeparam>
         /// <param name="argSelection">Argumnet property selector expression</param>
         /// <exception cref="ArgumentException"></exception>
-        public StringParameterConfigurer HasStringArg(Expression<Func<TParams, string>> argSelection)
+        public StringArgumentConfigurer HasStringArg(Expression<Func<TParams, string>> argSelection)
         {
 
             if (argSelection.Body is not MemberExpression memberExpression)
@@ -152,7 +152,7 @@ namespace SmartCLI.Commands
             var setter = accessedMember.GetSetMethod();
             var setDelegate = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), _cmd.Params, setter!);
 
-            var configurer = new StringParameterConfigurer(setDelegate);
+            var configurer = new StringArgumentConfigurer(setDelegate);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
         }
@@ -163,7 +163,7 @@ namespace SmartCLI.Commands
         /// <typeparam name="TArg">Argument type</typeparam>
         /// <param name="argSelection">Argumnet property selector expression</param>
         /// <exception cref="ArgumentException"></exception>
-        public CollectionParameterConfigurer<TArg> HasCollectionArg<TArg>(Expression<Func<TParams, ICollection<TArg>>> argSelection)
+        public CollectionArgumentConfigurer<TArg> HasCollectionArg<TArg>(Expression<Func<TParams, ICollection<TArg>>> argSelection)
             where TArg : IParsable<TArg>
         {
             if (argSelection.Body is not MemberExpression memberExpression)
@@ -175,32 +175,10 @@ namespace SmartCLI.Commands
             var setter = accessedMember.GetSetMethod();
             var setDelegate = (Action<ICollection<TArg>>)Delegate.CreateDelegate(typeof(Action<ICollection<TArg>>), _cmd.Params, setter!);
 
-            var configurer = new CollectionParameterConfigurer<TArg>(setDelegate);
+            var configurer = new CollectionArgumentConfigurer<TArg>(setDelegate);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
         }
-
-
-        public NumericParameterConfigurer<TOpt> HasNumericOpt<TOpt>(Expression<Func<TParams, TOpt>> optSelection)
-            where TOpt : INumber<TOpt>
-        {
-            if (optSelection.Body is not MemberExpression memberExpression)
-                throw new ArgumentException("Lambda must be a simple property access", nameof(optSelection));
-
-            if (memberExpression.Member is not PropertyInfo accessedMember)
-                throw new ArgumentException("Lambda must be a simple property access", nameof(optSelection));
-
-            var setter = accessedMember.GetSetMethod();
-            var setDelegate = (Action<TOpt>)Delegate.CreateDelegate(typeof(Action<TOpt>), _cmd.Params, setter!);
-
-            var configurer = new NumericParameterConfigurer<TOpt>(setDelegate);
-            var z = configurer.GetParameter();
-            z.IsOptional= true;
-            z.Name = "--laksjdfhlkjsah";
-            _cmd.AddArgument(z);
-            return configurer;
-        }
-
 
         /// <summary>
         ///     Returns configured <see cref="Command"/>.
