@@ -8,7 +8,8 @@ namespace SmartCLI.Commands
     /// </summary>
     public class StringArgumentConfigurer : ArgumentConfigurer<StringArgumentConfigurer, StringParameter>
     {
-        public StringArgumentConfigurer(Action<string> valueProvider) : base(new StringParameter(valueProvider))
+        public StringArgumentConfigurer(Action<string> valueProvider) 
+            : base(new StringParameter(valueProvider))
             => _configurer = this;
 
         /// <summary>

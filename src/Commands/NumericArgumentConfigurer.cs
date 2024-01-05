@@ -7,20 +7,20 @@ namespace SmartCLI.Commands
     /// <summary>
     ///     Fluent configurer for numeric-typed parameter.
     /// </summary>
-    /// <typeparam name="TParam">Numeric type.</typeparam>
-    public class NumericArgumentConfigurer<TParam> : ArgumentConfigurer<NumericArgumentConfigurer<TParam>, NumericParameter<TParam>>
-        where TParam : INumber<TParam>        
+    /// <typeparam name="TArg">Numeric type.</typeparam>
+    public class NumericArgumentConfigurer<TArg> : ArgumentConfigurer<NumericArgumentConfigurer<TArg>, NumericParameter<TArg>>
+        where TArg : INumber<TArg>        
     {
-        public NumericArgumentConfigurer(Action<TParam> valueProvider) : base(new NumericParameter<TParam>(valueProvider))                 
+        public NumericArgumentConfigurer(Action<TArg> valueProvider) : base(new NumericParameter<TArg>(valueProvider))                 
             => _configurer = this;
 
         /// <summary>
         ///     Sets parameter's minimum value.
         /// </summary>
         /// <returns><see cref="NumericArgumentConfigurer{TArg}"/></returns>
-        public NumericArgumentConfigurer<TParam> WithMinValue(TParam minValue)
+        public NumericArgumentConfigurer<TArg> WithMinValue(TArg minValue)
         {
-            _param.MinValue = new TParam[1] { minValue };
+            _param.MinValue = new TArg[1] { minValue };
             return this;
         }
 
@@ -28,9 +28,9 @@ namespace SmartCLI.Commands
         ///     Sets parameter's maximum value.
         /// </summary>
         /// <returns><see cref="NumericArgumentConfigurer{TArg}"/></returns>
-        public NumericArgumentConfigurer<TParam> WithMaxValue(TParam maxValue)
+        public NumericArgumentConfigurer<TArg> WithMaxValue(TArg maxValue)
         {
-            _param.MaxValue = new TParam[1] { maxValue };
+            _param.MaxValue = new TArg[1] { maxValue };
             return this;
         }
 
@@ -38,7 +38,7 @@ namespace SmartCLI.Commands
         ///     Sets parameter's allowed values.
         /// </summary>
         /// <returns><see cref="NumericArgumentConfigurer{TArg}"/></returns>
-        public NumericArgumentConfigurer<TParam> WithAllowedValues(params TParam[] allowedValues)
+        public NumericArgumentConfigurer<TArg> WithAllowedValues(params TArg[] allowedValues)
         {
             _param.AllowedValues = allowedValues;
             return this;
@@ -48,7 +48,7 @@ namespace SmartCLI.Commands
         ///     Sets format provider to be used for parsing value.
         /// </summary>
         /// <returns><see cref="NumericArgumentConfigurer{TArg}"/></returns>
-        public NumericArgumentConfigurer<TParam> WithFormatProvider(IFormatProvider formatProvider)
+        public NumericArgumentConfigurer<TArg> WithFormatProvider(IFormatProvider formatProvider)
         {
             _param.FormatProvider = formatProvider;
             return this;
@@ -58,7 +58,7 @@ namespace SmartCLI.Commands
         ///     Sets number style to be used for parsing value.
         /// </summary>
         /// <returns><see cref="NumericArgumentConfigurer{TArg}"/></returns>
-        public NumericArgumentConfigurer<TParam> WithNumberStyle(NumberStyles numberStyle)
+        public NumericArgumentConfigurer<TArg> WithNumberStyle(NumberStyles numberStyle)
         {
             _param.NumberStyle = numberStyle;
             return this;
