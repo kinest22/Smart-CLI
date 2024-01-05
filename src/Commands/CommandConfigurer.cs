@@ -98,15 +98,7 @@ namespace SmartCLI.Commands
         public NumericArgumentConfigurer<TArg> HasNumericArg<TArg>(Expression<Func<TParams, TArg>> argSelection)
             where TArg : INumber<TArg>
         {
-            if (argSelection.Body is not MemberExpression memberExpression)
-                throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
-
-            if (memberExpression.Member is not PropertyInfo accessedMember)
-                throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
-
-            var setter = accessedMember.GetSetMethod();
-            var setDelegate = (Action<TArg>)Delegate.CreateDelegate(typeof(Action<TArg>), _cmd.Params, setter!);
-
+            var setDelegate = ExtractSetterDelegate(argSelection);
             var configurer = new NumericArgumentConfigurer<TArg>(setDelegate);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
@@ -120,15 +112,7 @@ namespace SmartCLI.Commands
         /// <exception cref="ArgumentException"></exception>
         public DateTimeArgumentConfigurer HasDateTimeArg(Expression<Func<TParams, DateTime>> argSelection)
         {
-            if (argSelection.Body is not MemberExpression memberExpression)
-                throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
-
-            if (memberExpression.Member is not PropertyInfo accessedMember)
-                throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
-
-            var setter = accessedMember.GetSetMethod();
-            var setDelegate = (Action<DateTime>)Delegate.CreateDelegate(typeof(Action<DateTime>), _cmd.Params, setter!);
-
+            var setDelegate = ExtractSetterDelegate(argSelection);
             var configurer = new DateTimeArgumentConfigurer(setDelegate);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
@@ -142,16 +126,7 @@ namespace SmartCLI.Commands
         /// <exception cref="ArgumentException"></exception>
         public StringArgumentConfigurer HasStringArg(Expression<Func<TParams, string>> argSelection)
         {
-
-            if (argSelection.Body is not MemberExpression memberExpression)
-                throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
-
-            if (memberExpression.Member is not PropertyInfo accessedMember)
-                throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
-
-            var setter = accessedMember.GetSetMethod();
-            var setDelegate = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), _cmd.Params, setter!);
-
+            var setDelegate = ExtractSetterDelegate(argSelection);
             var configurer = new StringArgumentConfigurer(setDelegate);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
@@ -166,15 +141,7 @@ namespace SmartCLI.Commands
         public CollectionArgumentConfigurer<TArg> HasCollectionArg<TArg>(Expression<Func<TParams, ICollection<TArg>>> argSelection)
             where TArg : IParsable<TArg>
         {
-            if (argSelection.Body is not MemberExpression memberExpression)
-                throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
-
-            if (memberExpression.Member is not PropertyInfo accessedMember)
-                throw new ArgumentException("Lambda must be a simple property access", nameof(argSelection));
-
-            var setter = accessedMember.GetSetMethod();
-            var setDelegate = (Action<ICollection<TArg>>)Delegate.CreateDelegate(typeof(Action<ICollection<TArg>>), _cmd.Params, setter!);
-
+            var setDelegate = ExtractSetterDelegate(argSelection);
             var configurer = new CollectionArgumentConfigurer<TArg>(setDelegate);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
@@ -186,5 +153,21 @@ namespace SmartCLI.Commands
         /// <returns></returns>
         internal Command GetCommand()
             => _cmd;
+
+
+        /// <summary>
+        ///     Returns property setter delegate from specified property selection expression.
+        /// </summary>
+        private Action<TProp> ExtractSetterDelegate<TProp>(Expression<Func<TParams, TProp>> propSelection)
+        {
+            if (propSelection.Body is not MemberExpression memberExpression)
+                throw new ArgumentException("Lambda must be a simple property access", nameof(propSelection));
+
+            if (memberExpression.Member is not PropertyInfo accessedMember)
+                throw new ArgumentException("Lambda must be a simple property access", nameof(propSelection));
+
+            var setter = accessedMember.GetSetMethod();
+            return (Action<TProp>)Delegate.CreateDelegate(typeof(Action<TProp>), _cmd.Params, setter!);
+        }
     }
 }
