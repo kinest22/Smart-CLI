@@ -14,6 +14,8 @@ namespace SmartCLI.Commands
 
         public override int Position { get; internal set; }
 
+        public override string? Alias { get; internal set; }
+
         public bool Value { get; set; }
 
         internal override void Parse(string strval)

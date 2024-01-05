@@ -34,6 +34,11 @@ namespace SmartCLI.Commands
         public abstract string? Name { get; internal set; }
 
         /// <summary>
+        ///     Command parameter alias.
+        /// </summary>
+        public abstract string? Alias { get; internal set; }
+
+        /// <summary>
         ///     Description of command paramter.
         /// </summary>
         public abstract string? Description { get; set; }

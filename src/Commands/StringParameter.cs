@@ -18,6 +18,11 @@ namespace SmartCLI.Commands
         public override string? Name { get; internal set; }
 
         /// <summary>
+        ///     Parameter alias (for option case only)
+        /// </summary>
+        public override string? Alias { get; internal set; }
+
+        /// <summary>
         ///     Parameter description.
         /// </summary>
         public override string? Description { get; set; }
