@@ -14,7 +14,17 @@ namespace SmartCLI.Commands
         private protected TConfigurer _configurer = null!;
 
         public CommandParameterConfigurer(TParameter param)
-            => _param = param;        
+            => _param = param;
+
+        /// <summary>
+        ///     Sets the name for the command parameter.
+        /// </summary>
+        /// <returns><see cref="TConfigurer"/></returns>
+        public TConfigurer WithName(string name)
+        {
+            _param.Name = name.ToUpper();
+            return _configurer;
+        }
 
         /// <summary>
         ///     Sets description for the command parameter.
