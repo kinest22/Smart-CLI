@@ -92,9 +92,8 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Specifies numeric argument for command params.
         /// </summary>
-        /// <typeparam name="TArg">Argument type</typeparam>
-        /// <param name="argSelection">Argumnet property selector expression</param>
-        /// <exception cref="ArgumentException"></exception>
+        /// <typeparam name="TArg">Argument type.</typeparam>
+        /// <param name="argSelection">Argumnet property selector expression.</param>
         public NumericArgumentConfigurer<TArg> HasNumericArg<TArg>(Expression<Func<TParams, TArg>> argSelection)
             where TArg : INumber<TArg>
         {
@@ -107,9 +106,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Specifies date-time argument for command params.
         /// </summary>
-        /// <typeparam name="TArg">Argument type</typeparam>
-        /// <param name="argSelection">Argumnet property selector expression</param>
-        /// <exception cref="ArgumentException"></exception>
+        /// <param name="argSelection">Argumnet property selector expression.</param>
         public DateTimeArgumentConfigurer HasDateTimeArg(Expression<Func<TParams, DateTime>> argSelection)
         {
             var setDelegate = ExtractSetterDelegate(argSelection);
@@ -121,9 +118,8 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Specifies string argument for command params.
         /// </summary>
-        /// <typeparam name="TArg">Argument type</typeparam>
-        /// <param name="argSelection">Argumnet property selector expression</param>
-        /// <exception cref="ArgumentException"></exception>
+        /// <typeparam name="TArg">Argument type.</typeparam>
+        /// <param name="argSelection">Argumnet property selector expression.</param>
         public StringArgumentConfigurer HasStringArg(Expression<Func<TParams, string>> argSelection)
         {
             var setDelegate = ExtractSetterDelegate(argSelection);
@@ -135,9 +131,8 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Specifies collection argument for command params.
         /// </summary>
-        /// <typeparam name="TArg">Argument type</typeparam>
-        /// <param name="argSelection">Argumnet property selector expression</param>
-        /// <exception cref="ArgumentException"></exception>
+        /// <typeparam name="TArg">Argument type.</typeparam>
+        /// <param name="argSelection">Argumnet property selector expression.</param>
         public CollectionArgumentConfigurer<TArg> HasCollectionArg<TArg>(Expression<Func<TParams, ICollection<TArg>>> argSelection)
             where TArg : IParsable<TArg>
         {
@@ -148,12 +143,38 @@ namespace SmartCLI.Commands
         }
 
         /// <summary>
+        ///     Specifies flag option for command params.
+        /// </summary>
+        /// <param name="optSelection">Option property selector expression.</param>
+        public FlagOptionConfigurer HasFlagOpt(Expression<Func<TParams, bool>> optSelection)
+        {
+            var setDelegate = ExtractSetterDelegate(optSelection);
+            var configurer = new FlagOptionConfigurer(GetPropertyName(optSelection), setDelegate);
+            _cmd.AddOption(configurer.GetParameter());
+            return configurer;
+        }
+
+        /// <summary>
+        ///     Specifies numeric option for command params.
+        /// </summary>
+        /// <typeparam name="TOpt">Option value type.</typeparam>
+        /// <param name="optSelection">Option property selector expression.</param>
+        /// <returns></returns>
+        public NumericOptionConfigurer<TOpt> HasNumericOpt<TOpt>(Expression<Func<TParams, TOpt>> optSelection)
+            where TOpt : INumber<TOpt>
+        {
+            var setDelegate = ExtractSetterDelegate(optSelection);
+            var configurer = new NumericOptionConfigurer<TOpt>(GetPropertyName(optSelection), setDelegate);
+            _cmd.AddArgument(configurer.GetParameter());
+            return configurer;
+        }
+
+        /// <summary>
         ///     Returns configured <see cref="Command"/>.
         /// </summary>
         /// <returns></returns>
         internal Command GetCommand()
             => _cmd;
-
 
         /// <summary>
         ///     Returns property setter delegate from specified property selection expression.
@@ -168,6 +189,20 @@ namespace SmartCLI.Commands
 
             var setter = accessedMember.GetSetMethod();
             return (Action<TProp>)Delegate.CreateDelegate(typeof(Action<TProp>), _cmd.Params, setter!);
+        }
+
+        /// <summary>
+        ///     Returns property name from specified  property selection expression.
+        /// </summary>
+        private static string GetPropertyName<TProp>(Expression<Func<TParams, TProp>> propSelection)
+        {
+            if (propSelection.Body is not MemberExpression memberExpression)
+                throw new ArgumentException("Lambda must be a simple property access", nameof(propSelection));
+
+            if (memberExpression.Member is not PropertyInfo accessedMember)
+                throw new ArgumentException("Lambda must be a simple property access", nameof(propSelection));
+
+            return accessedMember.Name;
         }
     }
 }
