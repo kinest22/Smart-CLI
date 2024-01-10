@@ -14,5 +14,11 @@ namespace SmartCLI.Commands
             _param.Alias = alias;
             return _configurer;
         }
+
+        public TConfigurer IsHidden(bool hidden)
+        {
+            _param.IsHidden = hidden;
+            return _configurer;
+        }
     }
 }
