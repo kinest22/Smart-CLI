@@ -6,7 +6,7 @@ namespace SmartCLI.Commands
     /// <summary>
     ///     Represents parameter of command. This could be command argument or command option (starts with hyphens prefix).
     /// </summary>
-    public abstract class CommandParameter
+    public abstract class CommandParameter : ISearchableUnit
     {
         private static int _counter = 0;
         private protected readonly Delegate _valueProvider;
@@ -29,9 +29,14 @@ namespace SmartCLI.Commands
         public bool IsOptional { get; internal set; }
 
         /// <summary>
+        ///     Identifies whether the parameter is hidden. Applied to option paramteres only. Hidden options do not appear when help is used.
+        /// </summary>
+        public bool IsHidden { get; internal set; }
+
+        /// <summary>
         ///     Name of command paramter.
         /// </summary>
-        public abstract string? Name { get; internal set; }
+        public abstract string Name { get; internal set; }
 
         /// <summary>
         ///     Command parameter alias.

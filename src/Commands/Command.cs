@@ -6,7 +6,7 @@ namespace SmartCLI.Commands
     /// <summary>
     ///     Represents console command.
     /// </summary>
-    public class Command
+    public class Command : ISearchableUnit
     {
         private static int _cmdCounter = 1;
         private readonly VoidParams _params;
@@ -60,6 +60,11 @@ namespace SmartCLI.Commands
         ///     Command to which the current command is considered to be a child command.
         /// </summary>
         public Command? ParentCommand { get; internal set; }
+
+        /// <summary>
+        ///     Command space to which this command belongs to.
+        /// </summary>
+        public CommandSpace? CommandSpace { get; internal set; } 
 
         /// <summary>
         ///     Set of subcommands for the current command.

@@ -52,6 +52,7 @@ namespace SmartCLI.Commands
             var cmdConfigurer = new CommandConfigurer<TParams>();
             configAction.Invoke(cmdConfigurer);
             var cmd = cmdConfigurer.GetCommand();
+            cmd.CommandSpace = _cmdspace;
             if (cmd.ParentCommand is null)
                 _cmdspace.Commands.Add(cmd);
             return cmd;
