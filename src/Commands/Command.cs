@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SmartCLI.Commands
 {
@@ -52,9 +53,14 @@ namespace SmartCLI.Commands
         public string? AwaitMark { get; internal set; }
 
         /// <summary>
-        ///     Routine process to be processed when command is called.
+        ///     Routine process to be executed when command is called.
         /// </summary>
         internal Action<VoidParams>? TargetRoutine { get; set; }
+
+        /// <summary>
+        ///     Async routine to be executed when command is called.
+        /// </summary>
+        internal Func<VoidParams, Task>? AsyncTargetRoutine { get; set; }
 
         /// <summary>
         ///     Command to which the current command is considered to be a child command.
@@ -102,7 +108,14 @@ namespace SmartCLI.Commands
                 Arguments[i].ProvideValue();
             }
 
-            TargetRoutine?.Invoke(_params);
+
+            if (IsAwaitable)
+                AsyncTargetRoutine?
+                    .Invoke(_params)
+                    .GetAwaiter()
+                    .GetResult();
+            else
+                TargetRoutine?.Invoke(_params);
 
             for (int i = 0; i < tokens.Length; i++)
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 using SmartCLI;
 using SmartCLI.Commands;
 
@@ -19,7 +20,7 @@ var testCmdSpace = CommandSpace.ConfigureNew(cmdspace =>
         // cmd properties
         cmd.HasName("main")
         .HasDescription("this is main command.")
-        .HasRoutine(para => CommandRoutine(para))
+        .HasRoutine(async para => await CommandAsyncRoutine(para))
         .IsHidden();
 
         // arg 1 (numeric)
@@ -65,6 +66,18 @@ static void CommandRoutine(TestParams @params)
     Console.WriteLine($"Birth date: {@params.BirthDate}");
     Console.WriteLine($"Email is {@params.Email}");
     foreach(var val in @params.Values)
+        Console.WriteLine($"\tlucky number {val}");
+}
+
+// target asynchronous routine
+static async Task CommandAsyncRoutine(TestParams @params)
+{
+    Console.WriteLine("counting to 2 sec...");
+    await Task.Delay(5000);
+    Console.WriteLine($"ID is {@params.Id}");
+    Console.WriteLine($"Birth date: {@params.BirthDate}");
+    Console.WriteLine($"Email is {@params.Email}");
+    foreach (var val in @params.Values)
         Console.WriteLine($"\tlucky number {val}");
 }
 

@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Numerics;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SmartCLI.Commands
 {
@@ -57,13 +58,25 @@ namespace SmartCLI.Commands
         }
 
         /// <summary>
-        ///     Specifies routine process to be processed when command is called.
+        ///     Specifies routine to be executed when command is called.
         /// </summary>
         /// <param name="routine">Action delegate for the routine process.</param>
         /// <returns><see cref="CommandConfigurer{TParams}"/></returns>
         public CommandConfigurer<TParams> HasRoutine(Action<TParams> routine)
         {
             _cmd.TargetRoutine = (args) => routine.Invoke((TParams)args);
+            return this;
+        }
+
+        /// <summary>
+        ///     Specifies asynchronous routine to be executed when command is called.
+        /// </summary>
+        /// <param name="routine"></param>
+        /// <returns></returns>
+        public CommandConfigurer<TParams> HasRoutine(Func<TParams, Task> routine)
+        {
+            _cmd.IsAwaitable = true;
+            _cmd.AsyncTargetRoutine = async (args) => await routine.Invoke((TParams)args);
             return this;
         }
 
