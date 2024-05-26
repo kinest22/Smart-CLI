@@ -1,6 +1,7 @@
-﻿using SmartCLI.Commands;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using SmartCLI.Commands;
 
 namespace SmartCLI
 {
@@ -9,15 +10,15 @@ namespace SmartCLI
     /// </summary>
     internal static class CliUnitSearchEngine
     {
-        /// <summary>
-        ///     Hashcode-index dict.
-        /// </summary>
+        // Hashcode-index dict. 
+        // This dict contains collection hashcode as key 
+        // and collection element search id as value
         private static readonly Dictionary<int, int> _indexes = new();        
 
         /// <summary>
         ///     Finds next suitable CLI unit by snippet provided. 
         /// </summary>
-        public static TUnit? SearchForward<TUnit>(string snippet, IReadOnlyList<TUnit> units)
+        internal static TUnit? SearchForward<TUnit>(string snippet, IReadOnlyList<TUnit> units)
             where TUnit : class, ISearchableUnit
         {
             int index = GetIndex(units, out int hash);
@@ -36,7 +37,7 @@ namespace SmartCLI
         /// <summary>
         ///     Finds previous suitable CLI unit by snippet provided. 
         /// </summary>
-        public static TUnit? SearchBackward<TUnit>(string snippet, IReadOnlyList<TUnit> units)
+        internal static TUnit? SearchBackward<TUnit>(string snippet, IReadOnlyList<TUnit> units)
             where TUnit : class, ISearchableUnit
         {
             int index = GetIndex(units, out int hash);
@@ -53,15 +54,27 @@ namespace SmartCLI
         }
 
         /// <summary>
+        ///     Registers collection of <see cref="ISearchableUnit"/>
+        /// </summary>
+        /// <param name="collection">Collection to register.</param>
+        /// <exception cref="Exception"> thrown if specified collection already registered.</exception>
+        internal static void RegisterUnitCollection<TUnit>(IEnumerable<TUnit> collection)
+            where TUnit : ISearchableUnit
+        {
+            var hash = collection.GetHashCode();
+            if (_indexes.TryAdd(hash, 0) == false)
+                throw new Exception($"Collection of {typeof(TUnit)} was already registered.");
+        }
+
+        /// <summary>
         ///     Returns CLI unit index by collection hashcode.
         /// </summary>
-        private static int GetIndex(object obj, out int hash)
+        private static int GetIndex(IEnumerable collection, out int hash)
         {
-            hash = obj.GetHashCode();
+            hash = collection.GetHashCode();
             if (_indexes.TryGetValue(hash, out int val))
                 return val;
-            _indexes.Add(hash, 0);
-            return 0;
+            throw new Exception("Collection has never been registered.");
         }
     }
 }
