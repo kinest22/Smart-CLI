@@ -18,7 +18,6 @@ namespace SmartCLI.Commands
         public CommandParameter(Delegate valueProvider, bool isOptional)
         {
             Position = ++_counter;
-            Name = $"ARG_{Position}";
             _valueProvider = valueProvider;
             IsOptional= isOptional;
         }

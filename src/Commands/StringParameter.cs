@@ -9,13 +9,14 @@ namespace SmartCLI.Commands
     public class StringParameter : CommandParameter
     {
         public StringParameter(Action<string> valueProvider) : base(valueProvider)
-        {            
+        {   
+            Name = string.Empty;
         }
 
         /// <summary>
         ///     Parameter name.
         /// </summary>
-        public override string? Name { get; internal set; }
+        public override string Name { get; internal set; }
 
         /// <summary>
         ///     Parameter alias (for option case only)

@@ -13,12 +13,13 @@ namespace SmartCLI.Commands
     {
         public NumericParameter(Action<TParam> valueProvider) : base(valueProvider)
         {
+            Name = string.Empty;
         }
 
         /// <summary>
         ///     Name of parameter.
         /// </summary>
-        public override string? Name { get; internal set; }
+        public override string Name { get; internal set; }
 
         /// <summary>
         ///     Parameter alias (for option case only)

@@ -10,12 +10,13 @@ namespace SmartCLI.Commands
     {
         public DateTimeParameter(Action<DateTime> valueProvider) : base(valueProvider)
         {
+            Name = string.Empty;
         }
 
         /// <summary>
         ///     Name of parameter.
         /// </summary>
-        public override string? Name { get; internal set; }
+        public override string Name { get; internal set; }
 
         /// <summary>
         ///     Parameter alias (for option case only)

@@ -6,9 +6,10 @@ namespace SmartCLI.Commands
     {
         public BoolParameter(Action<bool> valueProvider) : base(valueProvider)
         {
+            Name = string.Empty;
         }
 
-        public override string? Name { get; internal set; }
+        public override string Name { get; internal set; }
 
         public override string? Description { get; set; }
 

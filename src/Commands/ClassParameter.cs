@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartCLI.Commands
 {
@@ -15,12 +11,13 @@ namespace SmartCLI.Commands
     {
         public ClassParameter(Action<TParam> valueProvider) : base(valueProvider)
         {
+            Name = string.Empty;
         }
 
         /// <summary>
         ///     Parameter name.
         /// </summary>
-        public override string? Name { get; internal set; }
+        public override string Name { get; internal set; }
 
         /// <summary>
         ///     Parameter alias (for option case only)
