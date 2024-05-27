@@ -162,7 +162,7 @@ namespace SmartCLI.Commands
         public FlagOptionConfigurer HasFlagOpt(Expression<Func<TParams, bool>> optSelection)
         {
             var setDelegate = ExtractSetterDelegate(optSelection);
-            var configurer = new FlagOptionConfigurer(GetPropertyName(optSelection), setDelegate);
+            var configurer = new FlagOptionConfigurer(setDelegate);
             _cmd.AddOption(configurer.GetParameter());
             return configurer;
         }
@@ -177,7 +177,7 @@ namespace SmartCLI.Commands
             where TOpt : INumber<TOpt>
         {
             var setDelegate = ExtractSetterDelegate(optSelection);
-            var configurer = new NumericOptionConfigurer<TOpt>(GetPropertyName(optSelection), setDelegate);
+            var configurer = new NumericOptionConfigurer<TOpt>(setDelegate);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
         }
@@ -202,20 +202,6 @@ namespace SmartCLI.Commands
 
             var setter = accessedMember.GetSetMethod();
             return (Action<TProp>)Delegate.CreateDelegate(typeof(Action<TProp>), _cmd.Params, setter!);
-        }
-
-        /// <summary>
-        ///     Returns property name from specified  property selection expression.
-        /// </summary>
-        private static string GetPropertyName<TProp>(Expression<Func<TParams, TProp>> propSelection)
-        {
-            if (propSelection.Body is not MemberExpression memberExpression)
-                throw new ArgumentException("Lambda must be a simple property access", nameof(propSelection));
-
-            if (memberExpression.Member is not PropertyInfo accessedMember)
-                throw new ArgumentException("Lambda must be a simple property access", nameof(propSelection));
-
-            return accessedMember.Name;
         }
     }
 }

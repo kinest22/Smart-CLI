@@ -4,10 +4,8 @@ namespace SmartCLI.Commands
 {
     public class FlagOptionConfigurer : OptionConfigurer<FlagOptionConfigurer, BoolParameter>
     {
-        public FlagOptionConfigurer(string name, Action<bool> valueProvider) 
-            : base(name, new BoolParameter(valueProvider))
+        public FlagOptionConfigurer(Action<bool> valueProvider) 
+            : base(new BoolParameter(valueProvider))
             => _configurer = this;
-
-
     }
 }

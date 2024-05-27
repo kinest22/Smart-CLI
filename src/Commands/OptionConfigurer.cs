@@ -5,8 +5,8 @@ namespace SmartCLI.Commands
         where TConfigurer : OptionConfigurer<TConfigurer, TOpt>
         where TOpt : CommandParameter
     {
-        public OptionConfigurer(string name, TOpt opt) : base(opt)         
-            => _param.Name = $"--{name.ToLower()}";
+        public OptionConfigurer(TOpt opt) : base(opt)         
+            => _param.Name = $"--opt";
         
 
         public TConfigurer WithAlias(string alias)

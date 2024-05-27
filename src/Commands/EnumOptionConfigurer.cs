@@ -6,7 +6,7 @@ namespace SmartCLI.Commands
     public class EnumOptionConfigurer<TEnum> : OptionConfigurer<EnumOptionConfigurer<TEnum>, EnumParameter<TEnum>>
         where TEnum : struct, Enum
     {
-        public EnumOptionConfigurer(string name, Action<TEnum> valueProvider) : base(name, new EnumParameter<TEnum>(valueProvider))
+        public EnumOptionConfigurer(Action<TEnum> valueProvider) : base(new EnumParameter<TEnum>(valueProvider))
             => _configurer = this;
 
         /// <summary>
