@@ -10,7 +10,8 @@ namespace SmartCLI.Commands
         where TConfigurer : ArgumentConfigurer<TConfigurer, TArg>
         where TArg : CommandParameter
     {
-        public ArgumentConfigurer(TArg arg) : base(arg) { }
+        public ArgumentConfigurer(TArg arg) : base(arg) 
+            => _param.Name = $"<ARG{CommandParameter.ArgCounter}>";
 
         /// <summary>
         ///     Sets position for the command parameter in command-line input.

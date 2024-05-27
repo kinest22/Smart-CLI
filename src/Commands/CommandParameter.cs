@@ -8,7 +8,6 @@ namespace SmartCLI.Commands
     /// </summary>
     public abstract class CommandParameter : ISearchableUnit
     {
-        private static int _counter = 0;
         private protected readonly Delegate _valueProvider;
 
         public CommandParameter(Delegate valueProvider) : this(valueProvider, false)
@@ -17,10 +16,28 @@ namespace SmartCLI.Commands
 
         public CommandParameter(Delegate valueProvider, bool isOptional)
         {
-            Position = ++_counter;
             _valueProvider = valueProvider;
             IsOptional= isOptional;
+            if (IsOptional)
+            {
+                OptCounter++;
+            }         
+            else
+            {
+                ArgCounter++;
+                Position = ArgCounter;
+            }            
         }
+
+        /// <summary>
+        ///     Argument counter.
+        /// </summary>
+        internal static int ArgCounter { get; private set; } = 0;
+
+        /// <summary>
+        ///     Option counter.
+        /// </summary>
+        internal static int OptCounter { get; private set; } = 0;
 
         /// <summary>
         ///     Defines if command paramter is optional. False for command argument, true for command option.
@@ -86,6 +103,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Resets command paramters count. 
         /// </summary>
-        internal static void ResetCounter() => _counter = 0; 
+        internal static void ResetCounters() 
+            => ArgCounter = OptCounter = 0; 
     }
 }

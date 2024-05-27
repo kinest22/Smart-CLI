@@ -17,7 +17,6 @@ namespace SmartCLI.Commands
 
         public CommandConfigurer()
         {
-            CommandParameter.ResetCounter();
             _cmd = new Command(new TParams());
         }
 
@@ -187,7 +186,10 @@ namespace SmartCLI.Commands
         /// </summary>
         /// <returns></returns>
         internal Command GetCommand()
-            => _cmd;
+        {
+            CommandParameter.ResetCounters();
+            return _cmd;
+        }
 
         /// <summary>
         ///     Returns property setter delegate from specified property selection expression.
