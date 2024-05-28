@@ -90,18 +90,6 @@ namespace SmartCLI.Commands
         }
 
         /// <summary>
-        ///     Configures the command as awaitable (requires any significant time to execute) and sets 
-        ///     the mark to be shown while command is beign executed (optionaly). Default mark is 'processing'.
-        /// </summary>
-        /// <returns><see cref="CommandConfigurer{TParams}"/></returns>
-        public CommandConfigurer<TParams> IsAwaitable(string awaitMark = "processing")
-        {
-            _cmd.IsAwaitable = true;
-            _cmd.AwaitMark = awaitMark;
-            return this;
-        }
-
-        /// <summary>
         ///     Specifies numeric argument for command params.
         /// </summary>
         /// <typeparam name="TArg">Argument type.</typeparam>

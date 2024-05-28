@@ -48,11 +48,6 @@ namespace SmartCLI.Commands
         public bool IsAwaitable { get; internal set; }
 
         /// <summary>
-        ///     Mark displayed while the command is being executed. Specified only when <see cref="IsAwaitable"/> is true.
-        /// </summary>
-        public string? AwaitMark { get; internal set; }
-
-        /// <summary>
         ///     Routine process to be executed when command is called.
         /// </summary>
         internal Action<VoidParams>? TargetRoutine { get; set; }
