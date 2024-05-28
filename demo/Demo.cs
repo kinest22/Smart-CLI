@@ -20,7 +20,7 @@ var testCmdSpace = CommandSpace.ConfigureNew(cmdspace =>
         // cmd properties
         cmd.HasName("main")
         .HasDescription("this is main command.")
-        .HasRoutine(async para => await CommandAsyncRoutine(para))
+        .HasRoutine(async para => await RoutineAsync(para))
         .IsHidden();
 
         // arg 1 (numeric)
@@ -60,7 +60,7 @@ Console.WriteLine("\nExecution result:");
 cmd.Execute("13 05.18.2001 kinest@gmail.com 22 7 30 18 88");
 
 // target routine to execute.
-static void CommandRoutine(TestParams @params)
+static void Routine(TestParams @params)
 {
     Console.WriteLine($"ID is {@params.Id}");
     Console.WriteLine($"Birth date: {@params.BirthDate}");
@@ -70,10 +70,10 @@ static void CommandRoutine(TestParams @params)
 }
 
 // target asynchronous routine
-static async Task CommandAsyncRoutine(TestParams @params)
+static async Task RoutineAsync(TestParams @params)
 {
     Console.WriteLine("counting to 2 sec...");
-    await Task.Delay(5000);
+    await Task.Delay(2000);
     Console.WriteLine($"ID is {@params.Id}");
     Console.WriteLine($"Birth date: {@params.BirthDate}");
     Console.WriteLine($"Email is {@params.Email}");
