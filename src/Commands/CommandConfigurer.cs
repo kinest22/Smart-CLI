@@ -170,6 +170,32 @@ namespace SmartCLI.Commands
         }
 
         /// <summary>
+        ///     Specifies date-time option for command params.
+        /// </summary>
+        /// <param name="argSelection">Argumnet property selector expression.</param>
+        public DateTimeOptionConfigurer HasDateTimeOpt(Expression<Func<TParams, DateTime>> argSelection)
+        {
+            var setDelegate = ExtractSetterDelegate(argSelection);
+            var configurer = new DateTimeOptionConfigurer(setDelegate, true);
+            _cmd.AddArgument(configurer.GetParameter());
+            return configurer;
+        }
+
+        /// <summary>
+        ///     Specifies collection option for command params.
+        /// </summary>
+        /// <typeparam name="TArg">Argument type.</typeparam>
+        /// <param name="argSelection">Argumnet property selector expression.</param>
+        public CollectionOptionConfigurer<TArg> HasCollectionOpt<TArg>(Expression<Func<TParams, ICollection<TArg>>> argSelection)
+            where TArg : IParsable<TArg>
+        {
+            var setDelegate = ExtractSetterDelegate(argSelection);
+            var configurer = new CollectionOptionConfigurer<TArg>(setDelegate, false);
+            _cmd.AddArgument(configurer.GetParameter());
+            return configurer;
+        }
+
+        /// <summary>
         ///     Returns configured <see cref="Command"/>.
         /// </summary>
         /// <returns></returns>
