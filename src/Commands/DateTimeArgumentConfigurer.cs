@@ -8,7 +8,8 @@ namespace SmartCLI.Commands
     /// </summary>
     public class DateTimeArgumentConfigurer : ArgumentConfigurer<DateTimeArgumentConfigurer, DateTimeParameter>
     {
-        public DateTimeArgumentConfigurer(Action<DateTime> valueProvider) : base(new DateTimeParameter(valueProvider))
+        public DateTimeArgumentConfigurer(Action<DateTime> valueProvider, bool isOptional) 
+            : base(new DateTimeParameter(valueProvider, isOptional))
             => _configurer = this;
 
         /// <summary>

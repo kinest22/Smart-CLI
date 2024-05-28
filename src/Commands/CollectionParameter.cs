@@ -13,7 +13,7 @@ namespace SmartCLI.Commands
     public class CollectionParameter<TParam> : CommandParameter, IEnumerable<TParam>
         where TParam : IParsable<TParam>
     {
-        public CollectionParameter(Action<ICollection<TParam>> valueProvider) : base(valueProvider)
+        public CollectionParameter(Action<ICollection<TParam>> valueProvider, bool isOptional) : base(valueProvider, isOptional)
         {
             Name = string.Empty;
         }

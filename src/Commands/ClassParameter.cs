@@ -9,7 +9,7 @@ namespace SmartCLI.Commands
     /// <typeparam name="TParam">Parameter type.</typeparam>
     public class ClassParameter<TParam> : CommandParameter where TParam : class, IParsable<TParam>
     {
-        public ClassParameter(Action<TParam> valueProvider) : base(valueProvider)
+        public ClassParameter(Action<TParam> valueProvider) : base(valueProvider, false)
         {
             Name = string.Empty;
         }

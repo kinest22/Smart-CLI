@@ -10,7 +10,8 @@ namespace SmartCLI.Commands
     public class CollectionArgumentConfigurer<TParam> : ArgumentConfigurer<CollectionArgumentConfigurer<TParam>, CollectionParameter<TParam>>
         where TParam : IParsable<TParam>
     {
-        public CollectionArgumentConfigurer(Action<ICollection<TParam>> valueProvider) : base(new CollectionParameter<TParam>(valueProvider))
+        public CollectionArgumentConfigurer(Action<ICollection<TParam>> valueProvider, bool isOptional) 
+            : base(new CollectionParameter<TParam>(valueProvider, isOptional))
             => _configurer = this;
         
         /// <summary>

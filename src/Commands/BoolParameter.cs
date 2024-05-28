@@ -4,7 +4,7 @@ namespace SmartCLI.Commands
 {
     public class BoolParameter : CommandParameter
     {
-        public BoolParameter(Action<bool> valueProvider) : base(valueProvider)
+        public BoolParameter(Action<bool> valueProvider) : base(valueProvider, true)
         {
             Name = string.Empty;
         }

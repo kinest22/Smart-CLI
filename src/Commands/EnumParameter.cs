@@ -4,7 +4,7 @@ namespace SmartCLI.Commands
 {
     public class EnumParameter<TEnum> : CommandParameter where TEnum : struct, Enum
     {
-        public EnumParameter(Action<TEnum> valueProvider) : base(valueProvider)
+        public EnumParameter(Action<TEnum> valueProvider) : base(valueProvider, true)
         {
             Name = string.Empty;
         }

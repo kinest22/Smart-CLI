@@ -8,7 +8,7 @@ namespace SmartCLI.Commands
     /// </summary>
     public class DateTimeParameter : CommandParameter
     {
-        public DateTimeParameter(Action<DateTime> valueProvider) : base(valueProvider)
+        public DateTimeParameter(Action<DateTime> valueProvider, bool isOptional) : base(valueProvider, isOptional)
         {
             Name = string.Empty;
         }

@@ -11,7 +11,7 @@ namespace SmartCLI.Commands
     /// <typeparam name="TParam">Numeric type.</typeparam>
     public class NumericParameter<TParam> : CommandParameter where TParam : INumber<TParam>
     {
-        public NumericParameter(Action<TParam> valueProvider) : base(valueProvider)
+        public NumericParameter(Action<TParam> valueProvider, bool isOptional) : base(valueProvider, isOptional)
         {
             Name = string.Empty;
         }

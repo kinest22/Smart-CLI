@@ -10,10 +10,6 @@ namespace SmartCLI.Commands
     {
         private protected readonly Delegate _valueProvider;
 
-        public CommandParameter(Delegate valueProvider) : this(valueProvider, false)
-        {
-        }
-
         public CommandParameter(Delegate valueProvider, bool isOptional)
         {
             _valueProvider = valueProvider;

@@ -110,7 +110,7 @@ namespace SmartCLI.Commands
             where TArg : INumber<TArg>
         {
             var setDelegate = ExtractSetterDelegate(argSelection);
-            var configurer = new NumericArgumentConfigurer<TArg>(setDelegate);
+            var configurer = new NumericArgumentConfigurer<TArg>(setDelegate, false);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
         }
@@ -122,7 +122,7 @@ namespace SmartCLI.Commands
         public DateTimeArgumentConfigurer HasDateTimeArg(Expression<Func<TParams, DateTime>> argSelection)
         {
             var setDelegate = ExtractSetterDelegate(argSelection);
-            var configurer = new DateTimeArgumentConfigurer(setDelegate);
+            var configurer = new DateTimeArgumentConfigurer(setDelegate, false);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
         }
@@ -149,7 +149,7 @@ namespace SmartCLI.Commands
             where TArg : IParsable<TArg>
         {
             var setDelegate = ExtractSetterDelegate(argSelection);
-            var configurer = new CollectionArgumentConfigurer<TArg>(setDelegate);
+            var configurer = new CollectionArgumentConfigurer<TArg>(setDelegate, false);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
         }
@@ -176,7 +176,7 @@ namespace SmartCLI.Commands
             where TOpt : INumber<TOpt>
         {
             var setDelegate = ExtractSetterDelegate(optSelection);
-            var configurer = new NumericOptionConfigurer<TOpt>(setDelegate);
+            var configurer = new NumericOptionConfigurer<TOpt>(setDelegate, true);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
         }

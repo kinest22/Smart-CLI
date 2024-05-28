@@ -8,7 +8,7 @@ namespace SmartCLI.Commands
     /// </summary>
     public class StringParameter : CommandParameter
     {
-        public StringParameter(Action<string> valueProvider) : base(valueProvider)
+        public StringParameter(Action<string> valueProvider) : base(valueProvider, false)
         {   
             Name = string.Empty;
         }
