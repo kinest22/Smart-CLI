@@ -103,19 +103,24 @@ namespace SmartCLI.Commands
                 Arguments[i].ProvideValue();
             }
 
-
+            _params.Caller = this;
             if (IsAwaitable)
+            {
                 AsyncTargetRoutine?
                     .Invoke(_params)
                     .GetAwaiter()
                     .GetResult();
+            }
             else
+            {
                 TargetRoutine?.Invoke(_params);
+            }
 
             for (int i = 0; i < tokens.Length; i++)
             {
                 Arguments[i].ResetValue();                
             }
+            _params.Caller = null;
         }
 
         /// <summary>

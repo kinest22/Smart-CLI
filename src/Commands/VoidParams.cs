@@ -7,11 +7,17 @@ namespace SmartCLI.Commands
     /// </summary>
     public class VoidParams 
     {
-        private readonly List<Command> _commands = new List<Command>();
+        private readonly List<Command> _commands = new();
+
         /// <summary>
         ///     Collection of suitable commands that can use these parameters.
         /// </summary>
-        public IReadOnlyList<Command> Commands { get => _commands; }
+        public Command? Caller { get; internal set; }
+
+        /// <summary>
+        ///     Collection of suitable commands that can use these parameters.
+        /// </summary>
+        public IReadOnlyList<Command> PossibleCommands { get => _commands; }
         
         /// <summary>
         ///     Adds specified command to the collection of suitable commands.

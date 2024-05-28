@@ -54,7 +54,7 @@ namespace SmartCLI.Commands
             var cmd = cmdConfigurer.GetCommand();
             cmd.CommandSpace = _cmdspace;
             if (cmd.ParentCommand is null)
-                _cmdspace.Commands.Add(cmd);
+                _cmdspace.AddCommand(cmd);
             return cmd;
         }
 
