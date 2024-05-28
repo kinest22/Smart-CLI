@@ -90,6 +90,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Executes the <see cref="TargetRoutine"/> of the command.
         /// </summary>
+        [Obsolete("Access modifier should be changed.")]
         public void Execute(string input)
         {
             char[] wschars = new char[] { ' ', '\t' };
