@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CS8321 // Local function is declared but never used
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -52,12 +54,10 @@ var testCmdSpace = CommandSpace.ConfigureNew(cmdspace =>
     });
 });
 
-var cmd = testCmdSpace.Commands[0];
-Console.WriteLine("General cmd info:");
-Console.WriteLine($"name: {cmd.Name}");
-Console.WriteLine($"desc: {cmd.Description}");
+
 Console.WriteLine("\nExecution result:");
-cmd.Execute("13 05.18.2001 kinest@gmail.com 22 7 30 18 88");
+testCmdSpace.Commands[0].Execute("13 05.18.2001 kinest@gmail.com 22 7 30 18 88");
+
 
 // target routine to execute.
 static void Routine(TestParams @params)
@@ -69,9 +69,16 @@ static void Routine(TestParams @params)
         Console.WriteLine($"\tlucky number {val}");
 }
 
+
 // target asynchronous routine
 static async Task RoutineAsync(TestParams @params)
 {
+    Console.WriteLine("Pllible commands are:");
+    foreach (var c in @params.PossibleCommands)
+        Console.WriteLine(c.Name);
+
+    Console.WriteLine($"Caller command is: {@params.Caller?.Name}");
+
     Console.WriteLine("counting to 2 sec...");
     await Task.Delay(2000);
     Console.WriteLine($"ID is {@params.Id}");
