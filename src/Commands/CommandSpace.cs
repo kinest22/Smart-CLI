@@ -12,11 +12,11 @@ namespace SmartCLI.Commands
     public class CommandSpace
     {
         private static int _spaceCounter = 1;
-        private readonly List<Command> _commands = new();
+        private readonly List<Command> _commands;
 
         internal CommandSpace()
         {
-            Commands = new List<Command>();
+            _commands = new List<Command>();
             _spaceCounter++;
         }
 
@@ -31,7 +31,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Set of commands combined in command space.
         /// </summary>
-        public IReadOnlyList<Command> Commands { get; internal set; }
+        public IReadOnlyList<Command> Commands => _commands;
 
         /// <summary>
         ///     Configures new <see cref="CommandSpace"/> using <see cref="CommandSpaceConfigurer"/>.
