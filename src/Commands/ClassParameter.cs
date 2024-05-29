@@ -27,7 +27,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Parameter description.
         /// </summary>
-        public override string? Description { get; set; }
+        public override string? Description { get; internal set; }
 
         /// <summary>
         ///     Parameter position.
@@ -37,8 +37,12 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Parameter value.
         /// </summary>
-        public TParam? Value { get; set; }
+        public TParam? Value { get; internal set; }
 
+        /// <summary>
+        ///     
+        /// </summary>
+        /// <param name="parser"></param>
         internal override void AcceptParser(Parser parser)
         {
             parser.SetClassValue(this);

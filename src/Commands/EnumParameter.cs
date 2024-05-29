@@ -22,7 +22,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Description of parameter.
         /// </summary>
-        public override string? Description { get; set; }
+        public override string? Description { get; internal set; }
 
         /// <summary>
         ///     Position of parameter in command line.
@@ -37,7 +37,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Parameter value. Is subject to validation for min, max or allowed values constraints (if any).
         /// </summary>
-        public TEnum? Value { get; set; }
+        public TEnum? Value { get; internal set; }
 
         internal override void AcceptParser(Parser parser)
         {

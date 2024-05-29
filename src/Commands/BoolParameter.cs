@@ -11,13 +11,13 @@ namespace SmartCLI.Commands
 
         public override string Name { get; internal set; }
 
-        public override string? Description { get; set; }
+        public override string? Description { get; internal set; }
 
         public override int Position { get; internal set; }
 
         public override string? Alias { get; internal set; }
 
-        public bool Value { get; set; }
+        public bool Value { get; internal set; }
 
         internal override void AcceptParser(Parser parser)
         {

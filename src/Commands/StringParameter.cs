@@ -26,7 +26,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Parameter description.
         /// </summary>
-        public override string? Description { get; set; }
+        public override string? Description { get; internal set; }
 
         /// <summary>
         ///     Parameter position in command-line.
@@ -36,22 +36,22 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Parameter value;
         /// </summary>
-        public string? Value { get; set; }
+        public string? Value { get; internal set; }
 
         /// <summary>
         ///     Parameter length max value.
         /// </summary>
-        public int? MaxLength { get; set; }
+        public int? MaxLength { get; internal set; }
 
         /// <summary>
         ///     Regular expression pattern. Used to validate passed parameter value for specific predefined pattern.
         /// </summary>
-        public string? Pattern { get; set; }
+        public string? Pattern { get; internal set; }
 
         /// <summary>
         ///     Regular expression options used to find mathces for the <see cref="Value"/>. Used in pair with <see cref="Pattern"/>.
         /// </summary>
-        public RegexOptions? RegExOptions { get; set; }
+        public RegexOptions? RegExOptions { get; internal set; }
 
         internal override void AcceptParser(Parser parser)
         {

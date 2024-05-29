@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 
 namespace SmartCLI.Commands
 {
@@ -31,7 +29,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Description of parameter.
         /// </summary>
-        public override string? Description { get; set; }
+        public override string? Description { get; internal set; }
 
         /// <summary>
         ///     Position of parameter in command line.
@@ -41,27 +39,27 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Parameter value. Is subject to validation for max capacity or allowed values constraints (if any).
         /// </summary>
-        public ICollection<TParam> Value { get; set; } = new List<TParam>(0);        
+        public ICollection<TParam> Value { get; internal set; } = new List<TParam>(0);        
 
         /// <summary>
         ///     Max capacity of collection. 
         /// </summary>
-        public int? MaxCapacity { get; set; }
+        public int? MaxCapacity { get; internal set; }
 
         /// <summary>
         ///     Set of values allowed.
         /// </summary>
-        public TParam[]? AllowedValues { get; set; }
+        public TParam[]? AllowedValues { get; internal set; }
 
         /// <summary>
         ///     Is used to validate constraint for each element in collection.
         /// </summary>
-        public Predicate<TParam>? Validator { get; set; } 
+        public Predicate<TParam>? Validator { get; internal set; } 
 
         /// <summary>
         ///     Is used to transform values while parsing.
         /// </summary>
-        public Func<TParam, TParam>? Transformer { get; set; }
+        public Func<TParam, TParam>? Transformer { get; internal set; }
 
         /// <summary>
         ///     Provides parameter value to command parameters.

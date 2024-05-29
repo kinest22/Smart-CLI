@@ -58,7 +58,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Description of command paramter.
         /// </summary>
-        public abstract string? Description { get; set; }
+        public abstract string? Description { get; internal set; }
 
         /// <summary>
         ///     Position of command paramter in command line.

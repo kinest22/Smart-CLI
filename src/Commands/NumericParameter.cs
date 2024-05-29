@@ -35,7 +35,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Description of parameter.
         /// </summary>
-        public override string? Description { get; set; }
+        public override string? Description { get; internal set; }
 
         /// <summary>
         ///     Position of parameter in command line.
@@ -45,22 +45,22 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Parameter value. Is subject to validation for min, max or allowed values constraints (if any).
         /// </summary>
-        public TParam? Value { get; set; }
+        public TParam? Value { get; internal set; }
 
         /// <summary>
         ///     Minimal value allowed.
         /// </summary>
-        public TParam[]? MinValue { get; set; } // always contains only one item if not null
+        public TParam[]? MinValue { get; internal set; } // always contains only one item if not null
 
         /// <summary>
         ///     Maximum value allowed.
         /// </summary>
-        public TParam[]? MaxValue { get; set; } // always contains only one item if not null
+        public TParam[]? MaxValue { get; internal set; } // always contains only one item if not null
 
         /// <summary>
         ///     Set of values allowed.
         /// </summary>
-        public TParam[]? AllowedValues { get; set; }
+        public TParam[]? AllowedValues { get; internal set; }
 
         internal override void AcceptParser(Parser parser)
         {
