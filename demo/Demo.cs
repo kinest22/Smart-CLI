@@ -57,6 +57,8 @@ var testCmdSpace = CommandSpace.ConfigureNew(cmdspace =>
 
         cmd.HasNumericOpt(para => para.Weight)
         .WithName("wedding date");
+
+        cmd.HasCollectionOpt(para => para.WorkingDays);
     });
 });
 
@@ -80,8 +82,6 @@ static void Routine(TestParams @params)
 static async Task RoutineAsync(TestParams @params)
 {
     Console.WriteLine("Possible commands are:");
-    foreach (var c in @params.PossibleCommands)
-        Console.WriteLine(c.Name);
 
     Console.WriteLine($"Caller command is: {@params.Caller?.Name}");
 
@@ -105,6 +105,6 @@ public class TestParams : VoidParams
     public DateTime? WeddingDate { get; set; }
     public string? Email { get; set; }
     public ICollection<double> Values { get; set; } = Array.Empty<double>();
-
     public double? Weight { get; set; }
+    public ICollection<DateTime>? WorkingDays { get; set; }
 }

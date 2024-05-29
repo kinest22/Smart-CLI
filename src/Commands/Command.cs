@@ -20,7 +20,6 @@ namespace SmartCLI.Commands
         {
             _cmdCounter++;
             _params = @params;
-            _params.AddCommand(this);
             _args = new List<CommandParameter>();
             _opts = new List<CommandParameter>();
             _subcmds = new List<Command>();
