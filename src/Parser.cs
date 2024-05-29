@@ -11,7 +11,7 @@ namespace SmartCLI
 
         private readonly string[] _tokens;
 
-        private int _tokindex;
+        private int _tokid;
 
         public Parser()
         {
@@ -25,11 +25,11 @@ namespace SmartCLI
         }
 
         internal void SetNumericValue<TNumeric> (NumericParameter<TNumeric> param)
-            where TNumeric : INumber<TNumeric>
+            where TNumeric : struct, INumber<TNumeric>
         {
             TNumeric num 
-                = TNumeric.TryParse(_tokens[_tokindex], param.NumberStyle ?? default, param.FormatProvider, out TNumeric? parsed) is false
-                ? throw new FormatException($"Cannot parse '{}' as {typeof(TNumeric).Name}.")
+                = TNumeric.TryParse(_tokens[_tokid], param.NumberStyle ?? default, param.FormatProvider, out TNumeric parsed) is false
+                ? throw new FormatException($"Cannot parse '{""}' as {typeof(TNumeric).Name}.")
                 : parsed;
 
             if (param.MinValue is not null && num < param.MinValue[0])
