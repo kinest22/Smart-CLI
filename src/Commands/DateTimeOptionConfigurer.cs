@@ -8,7 +8,7 @@ namespace SmartCLI.Commands
 {
     public class DateTimeOptionConfigurer : OptionConfigurer<DateTimeOptionConfigurer, DateTimeParameter>
     {
-        public DateTimeOptionConfigurer(Action<DateTime> valueProvider, bool isOptional)
+        public DateTimeOptionConfigurer(Action<DateTime?> valueProvider, bool isOptional)
         : base(new DateTimeParameter(valueProvider, isOptional))
             => _configurer = this;
     }

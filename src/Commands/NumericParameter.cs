@@ -9,8 +9,14 @@ namespace SmartCLI.Commands
     ///     Represents numeric-typed parameter of command (int, float, etc.)
     /// </summary>
     /// <typeparam name="TParam">Numeric type.</typeparam>
-    public class NumericParameter<TParam> : CommandParameter where TParam : INumber<TParam>
+    public class NumericParameter<TParam> : CommandParameter 
+        where TParam : struct, INumber<TParam>
     {
+        public NumericParameter(Action<TParam?> valueProvider, bool isOptional) : base(valueProvider, isOptional)
+        {
+            Name = string.Empty;
+        }
+
         public NumericParameter(Action<TParam> valueProvider, bool isOptional) : base(valueProvider, isOptional)
         {
             Name = string.Empty;
@@ -62,24 +68,24 @@ namespace SmartCLI.Commands
         /// <exception cref="FormatException"></exception>
         internal override void Parse(string strval)
         {
-            var fmt = FormatProvider is null
-                ? CultureInfo.InvariantCulture
-                : FormatProvider;
+            //var fmt = FormatProvider is null
+            //    ? CultureInfo.InvariantCulture
+            //    : FormatProvider;
 
-            var nstl = NumberStyle is null
-                ? NumberStyles.Any
-                : NumberStyle.Value; 
+            //var nstl = NumberStyle is null
+            //    ? NumberStyles.Any
+            //    : NumberStyle.Value; 
 
-            Value = TParam.TryParse(strval, nstl, fmt, out TParam? parsed) is false
-                ? throw new FormatException($"Cannot parse '{strval}' as {typeof(TParam).Name}.")
-                : parsed;
+            //Value = TParam.TryParse(strval, nstl, fmt, out TParam? parsed) is false
+            //    ? throw new FormatException($"Cannot parse '{strval}' as {typeof(TParam).Name}.")
+            //    : parsed;
         }
 
         /// <summary>
         ///     Provides parameter value to command parameters.
         /// </summary>
         internal override void ProvideValue()
-            => ((Action<TParam>)_valueProvider).Invoke(Value!);
+            => ((Action<TParam>)_valueProvider).Invoke(Value ?? default);
 
         /// <summary>
         ///     Resets parameter value.
@@ -93,19 +99,19 @@ namespace SmartCLI.Commands
         /// <exception cref="ArgumentException"></exception>
         internal override void Validate()
         {
-            if (MinValue is not null && Value! < MinValue[0])
-                throw new ArgumentException($"Value passed for <{Name}> parameter should be greater or equal than {MinValue[0]}. Value passed is {Value!}.");
+            //if (MinValue is not null && Value! < MinValue[0])
+            //    throw new ArgumentException($"Value passed for <{Name}> parameter should be greater or equal than {MinValue[0]}. Value passed is {Value!}.");
 
-            if (MaxValue is not null && Value! > MaxValue[0])
-                throw new ArgumentException($"Value passed for <{Name}> parameter should be less or equal than {MaxValue[0]}. Value passed is {Value!}.");
+            //if (MaxValue is not null && Value! > MaxValue[0])
+            //    throw new ArgumentException($"Value passed for <{Name}> parameter should be less or equal than {MaxValue[0]}. Value passed is {Value!}.");
 
-            if (AllowedValues is not null && !AllowedValues.Contains(Value!))
-            {
-                string allowedVals = string.Empty;
-                foreach (var val in AllowedValues)                
-                    allowedVals += val.ToString() + ", ";               
-                throw new ArgumentException($"Value passed for <{Name}> parameter should belong to the set: {{{allowedVals[..^2]}}}. Value passed is {Value!}.");
-            }
+            //if (AllowedValues is not null && !AllowedValues.Contains(Value!))
+            //{
+            //    string allowedVals = string.Empty;
+            //    foreach (var val in AllowedValues)                
+            //        allowedVals += val.ToString() + ", ";               
+            //    throw new ArgumentException($"Value passed for <{Name}> parameter should belong to the set: {{{allowedVals[..^2]}}}. Value passed is {Value!}.");
+            //}
         }
     }
 }

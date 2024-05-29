@@ -9,7 +9,7 @@ namespace SmartCLI.Commands
     /// </summary>
     /// <typeparam name="TArg">Numeric type.</typeparam>
     public class NumericArgumentConfigurer<TArg> : ArgumentConfigurer<NumericArgumentConfigurer<TArg>, NumericParameter<TArg>>
-        where TArg : INumber<TArg>        
+        where TArg : struct, INumber<TArg>        
     {
         public NumericArgumentConfigurer(Action<TArg> valueProvider, bool isOptional) 
             : base(new NumericParameter<TArg>(valueProvider, isOptional))                 

@@ -13,6 +13,11 @@ namespace SmartCLI.Commands
             Name = string.Empty;
         }
 
+        public DateTimeParameter(Action<DateTime?> valueProvider, bool isOptional) : base(valueProvider, isOptional)
+        {
+            Name = string.Empty;
+        }
+
         /// <summary>
         ///     Name of parameter.
         /// </summary>

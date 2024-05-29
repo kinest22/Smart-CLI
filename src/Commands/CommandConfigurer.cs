@@ -95,9 +95,9 @@ namespace SmartCLI.Commands
         /// <typeparam name="TArg">Argument type.</typeparam>
         /// <param name="argSelection">Argumnet property selector expression.</param>
         public NumericArgumentConfigurer<TArg> HasNumericArg<TArg>(Expression<Func<TParams, TArg>> argSelection)
-            where TArg : INumber<TArg>
+            where TArg : struct, INumber<TArg>
         {
-            var setDelegate = ExtractSetterDelegate(argSelection);
+            var setDelegate = GetSetter(argSelection);
             var configurer = new NumericArgumentConfigurer<TArg>(setDelegate, false);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
@@ -109,7 +109,7 @@ namespace SmartCLI.Commands
         /// <param name="argSelection">Argumnet property selector expression.</param>
         public DateTimeArgumentConfigurer HasDateTimeArg(Expression<Func<TParams, DateTime>> argSelection)
         {
-            var setDelegate = ExtractSetterDelegate(argSelection);
+            var setDelegate = GetSetter(argSelection);
             var configurer = new DateTimeArgumentConfigurer(setDelegate, false);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
@@ -122,7 +122,7 @@ namespace SmartCLI.Commands
         /// <param name="argSelection">Argumnet property selector expression.</param>
         public StringArgumentConfigurer HasStringArg(Expression<Func<TParams, string>> argSelection)
         {
-            var setDelegate = ExtractSetterDelegate(argSelection);
+            var setDelegate = GetSetter(argSelection);
             var configurer = new StringArgumentConfigurer(setDelegate);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
@@ -136,7 +136,7 @@ namespace SmartCLI.Commands
         public CollectionArgumentConfigurer<TArg> HasCollectionArg<TArg>(Expression<Func<TParams, ICollection<TArg>>> argSelection)
             where TArg : IParsable<TArg>
         {
-            var setDelegate = ExtractSetterDelegate(argSelection);
+            var setDelegate = GetSetter(argSelection);
             var configurer = new CollectionArgumentConfigurer<TArg>(setDelegate, false);
             _cmd.AddArgument(configurer.GetParameter());
             return configurer;
@@ -148,7 +148,7 @@ namespace SmartCLI.Commands
         /// <param name="optSelection">Option property selector expression.</param>
         public FlagOptionConfigurer HasFlagOpt(Expression<Func<TParams, bool>> optSelection)
         {
-            var setDelegate = ExtractSetterDelegate(optSelection);
+            var setDelegate = GetSetter(optSelection);
             var configurer = new FlagOptionConfigurer(setDelegate);
             _cmd.AddOption(configurer.GetParameter());
             return configurer;
@@ -160,12 +160,12 @@ namespace SmartCLI.Commands
         /// <typeparam name="TOpt">Option value type.</typeparam>
         /// <param name="optSelection">Option property selector expression.</param>
         /// <returns></returns>
-        public NumericOptionConfigurer<TOpt> HasNumericOpt<TOpt>(Expression<Func<TParams, TOpt>> optSelection)
-            where TOpt : INumber<TOpt>
+        public NumericOptionConfigurer<TOpt> HasNumericOpt<TOpt>(Expression<Func<TParams, TOpt?>> optSelection)
+            where TOpt : struct, INumber<TOpt>
         {
-            var setDelegate = ExtractSetterDelegate(optSelection);
+            var setDelegate = GetSetter(optSelection);
             var configurer = new NumericOptionConfigurer<TOpt>(setDelegate, true);
-            _cmd.AddArgument(configurer.GetParameter());
+            _cmd.AddOption(configurer.GetParameter());
             return configurer;
         }
 
@@ -173,11 +173,11 @@ namespace SmartCLI.Commands
         ///     Specifies date-time option for command params.
         /// </summary>
         /// <param name="argSelection">Argumnet property selector expression.</param>
-        public DateTimeOptionConfigurer HasDateTimeOpt(Expression<Func<TParams, DateTime>> argSelection)
+        public DateTimeOptionConfigurer HasDateTimeOpt(Expression<Func<TParams, DateTime?>> argSelection)
         {
-            var setDelegate = ExtractSetterDelegate(argSelection);
+            var setDelegate = GetSetter(argSelection);
             var configurer = new DateTimeOptionConfigurer(setDelegate, true);
-            _cmd.AddArgument(configurer.GetParameter());
+            _cmd.AddOption(configurer.GetParameter());
             return configurer;
         }
 
@@ -189,9 +189,9 @@ namespace SmartCLI.Commands
         public CollectionOptionConfigurer<TArg> HasCollectionOpt<TArg>(Expression<Func<TParams, ICollection<TArg>>> argSelection)
             where TArg : IParsable<TArg>
         {
-            var setDelegate = ExtractSetterDelegate(argSelection);
+            var setDelegate = GetSetter(argSelection);
             var configurer = new CollectionOptionConfigurer<TArg>(setDelegate, false);
-            _cmd.AddArgument(configurer.GetParameter());
+            _cmd.AddOption(configurer.GetParameter());
             return configurer;
         }
 
@@ -206,9 +206,9 @@ namespace SmartCLI.Commands
         }
 
         /// <summary>
-        ///     Returns property setter delegate from specified property selection expression.
+        ///     Returns non-nullable property setter delegate from specified property selection expression.
         /// </summary>
-        private Action<TProp> ExtractSetterDelegate<TProp>(Expression<Func<TParams, TProp>> propSelection)
+        private Action<TProp> GetSetter<TProp>(Expression<Func<TParams, TProp>> propSelection)
         {
             if (propSelection.Body is not MemberExpression memberExpression)
                 throw new ArgumentException("Lambda must be a simple property access", nameof(propSelection));
@@ -218,6 +218,22 @@ namespace SmartCLI.Commands
 
             var setter = accessedMember.GetSetMethod();
             return (Action<TProp>)Delegate.CreateDelegate(typeof(Action<TProp>), _cmd.Params, setter!);
+        }
+
+        /// <summary>
+        ///     Returns nullable property setter delegate from specified property selection expression.
+        /// </summary>
+        private Action<TProp?> GetSetter<TProp>(Expression<Func<TParams, TProp?>> propSelection)
+            where TProp : struct
+        {
+            if (propSelection.Body is not MemberExpression memberExpression)
+                throw new ArgumentException("Lambda must be a simple property access", nameof(propSelection));
+
+            if (memberExpression.Member is not PropertyInfo accessedMember)
+                throw new ArgumentException("Lambda must be a simple property access", nameof(propSelection));
+
+            var setter = accessedMember.GetSetMethod();
+            return (Action<TProp?>)Delegate.CreateDelegate(typeof(Action<TProp?>), _cmd.Params, setter!);
         }
     }
 }
