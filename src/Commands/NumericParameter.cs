@@ -62,23 +62,9 @@ namespace SmartCLI.Commands
         /// </summary>
         public TParam[]? AllowedValues { get; set; }
 
-        /// <summary>
-        ///     Parses <see cref="Value"/> from specified string.
-        /// </summary>
-        /// <exception cref="FormatException"></exception>
-        internal override void Parse(string strval)
+        internal override void AcceptParser(Parser parser)
         {
-            //var fmt = FormatProvider is null
-            //    ? CultureInfo.InvariantCulture
-            //    : FormatProvider;
-
-            //var nstl = NumberStyle is null
-            //    ? NumberStyles.Any
-            //    : NumberStyle.Value; 
-
-            //Value = TParam.TryParse(strval, nstl, fmt, out TParam? parsed) is false
-            //    ? throw new FormatException($"Cannot parse '{strval}' as {typeof(TParam).Name}.")
-            //    : parsed;
+            parser.SetNumericValue(this);
         }
 
         /// <summary>
@@ -92,26 +78,5 @@ namespace SmartCLI.Commands
         /// </summary>
         internal override void ResetValue()
             => ((Action<TParam>)_valueProvider).Invoke(default!);
-
-        /// <summary>
-        ///     Validates parsed parameter value for min, max and allowed values if they are specified.
-        /// </summary>
-        /// <exception cref="ArgumentException"></exception>
-        internal override void Validate()
-        {
-            //if (MinValue is not null && Value! < MinValue[0])
-            //    throw new ArgumentException($"Value passed for <{Name}> parameter should be greater or equal than {MinValue[0]}. Value passed is {Value!}.");
-
-            //if (MaxValue is not null && Value! > MaxValue[0])
-            //    throw new ArgumentException($"Value passed for <{Name}> parameter should be less or equal than {MaxValue[0]}. Value passed is {Value!}.");
-
-            //if (AllowedValues is not null && !AllowedValues.Contains(Value!))
-            //{
-            //    string allowedVals = string.Empty;
-            //    foreach (var val in AllowedValues)                
-            //        allowedVals += val.ToString() + ", ";               
-            //    throw new ArgumentException($"Value passed for <{Name}> parameter should belong to the set: {{{allowedVals[..^2]}}}. Value passed is {Value!}.");
-            //}
-        }
     }
 }

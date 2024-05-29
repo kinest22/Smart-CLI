@@ -39,15 +39,9 @@ namespace SmartCLI.Commands
         /// </summary>
         public TEnum? Value { get; set; }
 
-        /// <summary>
-        ///     Parses <see cref="Value"/> from specified string.
-        /// </summary>
-        /// <exception cref="FormatException"></exception>
-        internal override void Parse(string strval)
-        { 
-            Value = Enum.TryParse<TEnum>(strval, IgnoreCase, out var parsed) is false
-                ? throw new FormatException($"Cannot parse '{strval}' as {typeof(TEnum).Name}.")
-                : parsed;
+        internal override void AcceptParser(Parser parser)
+        {
+            parser.SetEnumValue(this);
         }
 
         /// <summary>
@@ -62,13 +56,5 @@ namespace SmartCLI.Commands
         /// </summary>
         internal override void ResetValue()
             => ((Action<TEnum>)_valueProvider).Invoke(default!);
-
-        /// <summary>
-        ///     Validates parsed parameter value for constraints.
-        /// </summary>
-        /// <exception cref="ArgumentException"></exception>
-        internal override void Validate()
-        {            
-        }
     }
 }

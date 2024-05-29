@@ -92,14 +92,19 @@ namespace SmartCLI.Commands
         [Obsolete("Access modifier should be changed.")]
         public void Execute(string input)
         {
+
+#if DEBUG
+            Parser.GetCurrentInput(input);
+#endif
+
+            Parser parser = new();
             char[] wschars = new char[] { ' ', '\t' };
             int argn = Arguments.Count;
             string[] tokens = input.Split(wschars, argn);
             
             for (int i = 0; i < tokens.Length; i++)
             {
-                Arguments[i].Parse(tokens[i]);
-                Arguments[i].Validate();
+                Arguments[i].AcceptParser(parser);
                 Arguments[i].ProvideValue();
             }
 

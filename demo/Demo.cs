@@ -64,7 +64,10 @@ var testCmdSpace = CommandSpace.ConfigureNew(cmdspace =>
 
 
 Console.WriteLine("\nExecution result:");
-testCmdSpace.Commands[0].Execute("13 05.18.2001 kinest@gmail.com 22 7 30 18 88");
+
+#if DEBUG
+    testCmdSpace.Commands[0].Execute("13 05.18.2001 kinest@gmail.com 22 7 30 18 88");
+#endif
 
 
 // target routine to execute.
@@ -104,7 +107,7 @@ public class TestParams : VoidParams
     public DateTime BirthDate { get; set; }
     public DateTime? WeddingDate { get; set; }
     public string? Email { get; set; }
-    public ICollection<double> Values { get; set; } = Array.Empty<double>();
+    public ICollection<double>? Values { get; set; }
     public double? Weight { get; set; }
     public ICollection<DateTime>? WorkingDays { get; set; }
 }

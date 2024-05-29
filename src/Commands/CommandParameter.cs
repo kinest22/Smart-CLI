@@ -76,15 +76,10 @@ namespace SmartCLI.Commands
         public NumberStyles? NumberStyle { get; internal set; }
 
         /// <summary>
-        ///     In derived class parses string-represented command paramter from command line.
+        ///     Accepts parser (visitor) to get parsed value.
         /// </summary>
-        /// <param name="strval"></param>
-        internal abstract void Parse(string strval);
-
-        /// <summary>
-        ///     In derived class validates parsed value subject to constraints (if any).
-        /// </summary>
-        internal abstract void Validate();
+        /// <param name="parser"></param>
+        internal abstract void AcceptParser(Parser parser);
 
         /// <summary>
         ///     In derived class provides value to parameters member.

@@ -53,11 +53,10 @@ namespace SmartCLI.Commands
         /// </summary>
         public RegexOptions? RegExOptions { get; set; }
 
-        /// <summary>
-        ///     Parses <see cref="Value"/> from specified string 
-        /// </summary>
-        internal override void Parse(string strval)        
-            => Value = strval;
+        internal override void AcceptParser(Parser parser)
+        {
+            parser.SetStringValue(this);
+        }
 
         /// <summary>
         ///     Provides Parameter value to command parameters.
@@ -70,21 +69,5 @@ namespace SmartCLI.Commands
         /// </summary>
         internal override void ResetValue()
             => ((Action<string>)_valueProvider).Invoke(default!);
-
-        /// <summary>
-        ///     Validates parsed parameter value for max length.
-        /// </summary>
-        internal override void Validate()
-        {
-            if (MaxLength is not null && Value!.Length > MaxLength)
-                throw new ArgumentException($"{Value} exceeds max length of {MaxLength} symbols.");
-
-            RegexOptions regopt = RegExOptions is null
-                ? RegexOptions.None
-                : RegExOptions.Value;
-
-            if (Pattern is not null && Regex.IsMatch(Value!, Pattern, regopt) is false)
-                throw new ArgumentException($"Passed value {Value} does not math regular expression {Pattern}");
-        }
     }
 }

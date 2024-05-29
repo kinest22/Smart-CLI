@@ -19,11 +19,9 @@ namespace SmartCLI.Commands
 
         public bool Value { get; set; }
 
-        internal override void Parse(string strval)
+        internal override void AcceptParser(Parser parser)
         {
-            Value = bool.TryParse(strval, out bool parsed) is false
-                ? throw new FormatException($"Cannot parse '{strval}' as {typeof(bool).Name}.")
-                : parsed;
+            parser.SetBoolValue(this);
         }
 
         internal override void ProvideValue()
@@ -31,9 +29,5 @@ namespace SmartCLI.Commands
 
         internal override void ResetValue()
             => ((Action<bool>)_valueProvider).Invoke(default!);
-
-        internal override void Validate()
-        {            
-        }
     }
 }

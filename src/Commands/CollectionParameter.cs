@@ -64,64 +64,6 @@ namespace SmartCLI.Commands
         public Func<TParam, TParam>? Transformer { get; set; }
 
         /// <summary>
-        ///     Parses collection elements from specified string.
-        /// </summary>
-        /// <exception cref="FormatException"></exception>
-        internal override void Parse(string strval)
-        {
-            var fmt = FormatProvider is null
-                ? CultureInfo.InvariantCulture
-                : FormatProvider;
-
-            string[] tokens = strval.Split(' ');
-            List<TParam> values = new();
-            foreach(string token in tokens)
-            {
-                var val = TParam.TryParse(token, fmt, out TParam? parsed) is false
-                ? throw new FormatException($"Cannot parse collection element '{token}' as {typeof(TParam).Name}.")
-                : parsed;
-
-                if (Transformer is not null)
-                    val = Transformer.Invoke(val);
-
-                values.Add(val);
-            }
-            Value = values;
-        }
-
-        /// <summary>
-        ///     Validates parsed parameter value for min, max and allowed values if they are specified.
-        /// </summary>
-        /// <exception cref="ArgumentException"></exception>
-        internal override void Validate()
-        {
-            if (MaxCapacity is not null && Value.Count > MaxCapacity)
-                throw new ArgumentException($"Argument <{Name}> should contain no more than {MaxCapacity} elements, but it contains {Value.Count} elements.");
-
-
-            if (Value.Count is not 0 && AllowedValues is not null)
-            {
-                foreach (TParam val in Value)
-                {
-                    if (!AllowedValues.Contains(val))
-                    {
-                        string allowedVals = string.Empty;
-                        foreach (var alval in AllowedValues)
-                            allowedVals += alval.ToString() + ", ";
-                        throw new ArgumentException($"Values passed for <{Name}> argument should belong to the set: {{{allowedVals[..^2]}}}. Value passed is '{val}'.");
-                    }                    
-                }
-            }
-
-            if (Validator is not null)
-            {
-                foreach (TParam val in Value)
-                    if (!Validator.Invoke(val))
-                        throw new ArgumentException($"Value '{val}' does not meet user criteria.");
-            }
-        }
-
-        /// <summary>
         ///     Provides parameter value to command parameters.
         /// </summary>
         internal override void ProvideValue()        
@@ -146,5 +88,10 @@ namespace SmartCLI.Commands
         /// <returns>An enumerator that can be used to iterate through the collection.</returns>
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
+
+        internal override void AcceptParser(Parser parser)
+        {
+            parser.SetCollectionValue(this);
+        }
     }
 }
