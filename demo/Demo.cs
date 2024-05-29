@@ -51,6 +51,12 @@ var testCmdSpace = CommandSpace.ConfigureNew(cmdspace =>
         .WithDescription("Lucky numbers.")
         .WithMaxCapacity(5)
         .WithValidation(d => d <= 100);
+
+        cmd.HasDateTimeOpt(para => para.WeddingDate)
+        .WithName("wedding date");
+
+        cmd.HasNumericOpt(para => para.Weight)
+        .WithName("wedding date");
     });
 });
 
@@ -73,7 +79,7 @@ static void Routine(TestParams @params)
 // target asynchronous routine
 static async Task RoutineAsync(TestParams @params)
 {
-    Console.WriteLine("Pllible commands are:");
+    Console.WriteLine("Possible commands are:");
     foreach (var c in @params.PossibleCommands)
         Console.WriteLine(c.Name);
 
@@ -96,6 +102,9 @@ public class TestParams : VoidParams
 {
     public int Id { get; set; }
     public DateTime BirthDate { get; set; }
+    public DateTime? WeddingDate { get; set; }
     public string? Email { get; set; }
     public ICollection<double> Values { get; set; } = Array.Empty<double>();
+
+    public double? Weight { get; set; }
 }
