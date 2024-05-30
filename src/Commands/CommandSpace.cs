@@ -9,7 +9,7 @@ namespace SmartCLI.Commands
     /// <summary>
     ///     Represents logically grouped set of commands.
     /// </summary>
-    public class CommandSpace
+    public class CommandSpace : ISearchableUnit
     {
         private static int _spaceCounter = 1;
         private readonly List<Command> _commands;
