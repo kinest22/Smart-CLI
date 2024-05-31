@@ -53,6 +53,27 @@ namespace SmartCLI
             return null;
         }
 
+
+
+        internal static TUnit? Search<TUnit>(string snippet, IReadOnlyList<TUnit> units, SearchDirection direction)
+            where TUnit : class, ISearchableUnit
+        {
+            int hash = units.GetHashCode();
+            int currind = _indexes[hash];
+
+            for(int i = currind; CheckForClause(i, units.Count, direction); i += (int)direction, _indexes[hash] += (int)direction)
+            {
+                if (!units[i].IsHidden && units[i].Name.StartsWith(snippet, StringComparison.OrdinalIgnoreCase))
+                    return units[i];
+            }           
+
+            return null;
+        }
+
+
+
+
+
         /// <summary>
         ///     Registers collection of <see cref="ISearchableUnit"/>
         /// </summary>
@@ -76,5 +97,19 @@ namespace SmartCLI
                 return val;
             throw new Exception("Collection has never been registered.");
         }
+
+        private static bool CheckForClause(int i, int n, SearchDirection dir)
+        {
+            if (dir == SearchDirection.Forward && i < n) return true;
+            else if (dir == SearchDirection.Backward && i >= 0) return true;
+            else return false;
+        }
+    }
+
+    internal enum SearchDirection
+    {
+        None = 0,
+        Forward = 1,
+        Backward = -1,
     }
 }
