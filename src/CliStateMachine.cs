@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SmartCLI
 {
-    internal class CommandLineInterpreter
+    internal class CliStateMachine
     {
 #pragma warning disable IDE1006 // Naming Styles
         private const ConsoleKey BKSP = ConsoleKey.Backspace;
@@ -34,7 +34,7 @@ namespace SmartCLI
 
 
 
-        internal CommandLineInterpreter(IEnumerable<CommandSpace> cmdspaces)
+        internal CliStateMachine(IEnumerable<CommandSpace> cmdspaces)
         {
             _cmdspaces = cmdspaces;
             _buffer = new StringBuilder();
@@ -54,21 +54,11 @@ namespace SmartCLI
 
 
 
-        internal void InterpretInput(ConsoleKeyInfo cki)
+        internal void ProcessInput(ConsoleKeyInfo cki)
         {
             var key = cki.Key;
             var mod = cki.Modifiers;
             var ch = cki.KeyChar;
-
-            switch (key)
-            {
-                case ENTR:
-                    goto case ESC;
-                case ESC:
-                    break;
-            }
-
-
 
             switch(key, mod)
             {
