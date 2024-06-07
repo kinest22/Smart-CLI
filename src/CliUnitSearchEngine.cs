@@ -112,4 +112,74 @@ namespace SmartCLI
         Forward = 1,
         Backward = -1,
     }
+
+
+
+
+    public class Trie
+    {
+
+        private readonly CliUnitTrie _root;
+
+
+
+
+
+        public Trie(string[] dict)
+        {
+            _root = new TrieNode("");
+            foreach (string s in dict)
+                InsertWord(s);
+        }
+
+
+        private void InsertWord(string s)
+        {
+            CliUnitTrie curr = _root;
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (!curr.Children.ContainsKey(s[i]))
+                {
+
+                    curr.Children.Add(s[i], new TrieNode(s.Substring(0, i + 1)));
+                }
+                curr = curr.Children[s[i]];
+                if (i == s.Length - 1)
+                    curr.IsTerminal = true;
+            }
+        }
+
+        public List<string> GetWordsForPrefix(string pre)
+        {
+            List<string> results = new();
+            CliUnitTrie curr = _root;
+            foreach (char c in pre.ToCharArray())
+            {
+                if (curr.Children.ContainsKey(c))
+                {
+                    curr = curr.Children[c];
+                }
+                else
+                {
+                    return results;
+                }
+            }
+
+
+            FindAllChildWords(curr, results);
+            return results;
+        }
+
+        private void FindAllChildWords(CliUnitTrie n, List<string> results)
+        {
+            if (n.IsTerminal)
+                results.Add(n.Prefix);
+            foreach (var c in n.Children.Keys)
+            {
+                FindAllChildWords(n.Children[c], results);
+            }
+        }
+    }
+
+
 }
