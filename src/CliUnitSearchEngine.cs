@@ -8,64 +8,38 @@ namespace SmartCLI
     /// <summary>
     ///     Provides methods for bidirectional search for CLI basic units.
     /// </summary>
-    internal static class CliUnitSearchEngine
+    internal class CliUnitSearchEngine
     {
-        // Hashcode-index dict. 
-        // This dict contains collection hashcode as key 
-        // and collection element search id as value
-        private static readonly Dictionary<int, int> _indexes = new();        
+        private static readonly CliUnitSearchEngine _engine = new();
+        private readonly Dictionary<int, CliUnitTrie> _tries;
+        private readonly List<ISearchableUnit> _unitsFound;
+        private CliUnitTrie? _currentTrie;
+        private int _index;
 
-        /// <summary>
-        ///     Finds next suitable CLI unit by snippet provided. 
-        /// </summary>
-        internal static TUnit? SearchForward<TUnit>(string snippet, IReadOnlyList<TUnit> units)
-            where TUnit : class, ISearchableUnit
+        static CliUnitSearchEngine()
         {
-            int index = GetIndex(units, out int hash);
-
-            if (index >= units.Count - 1)
-                _indexes[hash] = 0;
-
-            for (int i = index; i < units.Count; i++, _indexes[hash]++)            
-                if (units[i].IsHidden is false
-                    && units[i].Name.StartsWith(snippet, StringComparison.OrdinalIgnoreCase)
-                    ) return units[i];                
-            
-            return null;    
         }
 
-        /// <summary>
-        ///     Finds previous suitable CLI unit by snippet provided. 
-        /// </summary>
-        internal static TUnit? SearchBackward<TUnit>(string snippet, IReadOnlyList<TUnit> units)
-            where TUnit : class, ISearchableUnit
+        private CliUnitSearchEngine()
         {
-            int index = GetIndex(units, out int hash);
+            _tries = new();
+            _unitsFound = new();
+        }
 
-            if (index <= 0)
-                _indexes[hash] = units.Count - 1;
+        public static CliUnitSearchEngine Create()
+            => _engine;
 
-            for (int i = index; i >= 0; i--, _indexes[hash]--)
-                if (units[i].IsHidden is false
-                    && units[i].Name.StartsWith(snippet, StringComparison.OrdinalIgnoreCase)
-                    ) return units[i];
+
+
+        internal ISearchableUnit? GetNext(string wildcard, IReadOnlyList<ISearchableUnit> units)
+        {
 
             return null;
         }
 
 
-
-        internal static TUnit? Search<TUnit>(string snippet, IReadOnlyList<TUnit> units, SearchDirection direction)
-            where TUnit : class, ISearchableUnit
+        internal static ISearchableUnit? GetPrevious(string wildcard, IReadOnlyList<ISearchableUnit> units)
         {
-            int hash = units.GetHashCode();
-            int currind = _indexes[hash];
-
-            for(int i = currind; CheckForClause(i, units.Count, direction); i += (int)direction, _indexes[hash] += (int)direction)
-            {
-                if (!units[i].IsHidden && units[i].Name.StartsWith(snippet, StringComparison.OrdinalIgnoreCase))
-                    return units[i];
-            }           
 
             return null;
         }
@@ -74,112 +48,55 @@ namespace SmartCLI
 
 
 
-        /// <summary>
-        ///     Registers collection of <see cref="ISearchableUnit"/>
-        /// </summary>
-        /// <param name="collection">Collection to register.</param>
-        /// <exception cref="Exception"> thrown if specified collection already registered.</exception>
-        internal static void RegisterUnitCollection<TUnit>(IEnumerable<TUnit> collection)
-            where TUnit : ISearchableUnit
+
+
+        internal void RegisterUnitCollection(IEnumerable<ISearchableUnit> collection)
         {
             var hash = collection.GetHashCode();
-            if (_indexes.TryAdd(hash, 0) == false)
-                throw new Exception($"Collection of {typeof(TUnit)} was already registered.");
-        }
+            if (_tries.ContainsKey(hash))
+                throw new Exception("Collection already registered.");
 
-        /// <summary>
-        ///     Returns CLI unit index by collection hashcode.
-        /// </summary>
-        private static int GetIndex(IEnumerable collection, out int hash)
-        {
-            hash = collection.GetHashCode();
-            if (_indexes.TryGetValue(hash, out int val))
-                return val;
-            throw new Exception("Collection has never been registered.");
-        }
+            var root = CliUnitTrie.CreateRootTrie();
+            foreach (var unit in collection)
+                root.PopulateWith(unit);
 
-        private static bool CheckForClause(int i, int n, SearchDirection dir)
-        {
-            if (dir == SearchDirection.Forward && i < n) return true;
-            else if (dir == SearchDirection.Backward && i >= 0) return true;
-            else return false;
-        }
-    }
-
-    internal enum SearchDirection
-    {
-        None = 0,
-        Forward = 1,
-        Backward = -1,
-    }
-
-
-
-
-    public class Trie
-    {
-
-        private readonly CliUnitTrie _root;
-
-
-
-
-
-        public Trie(string[] dict)
-        {
-            _root = new TrieNode("");
-            foreach (string s in dict)
-                InsertWord(s);
+            _tries.Add(hash, root);
         }
 
 
-        private void InsertWord(string s)
+        private bool TryFindSubTrie(string wildcard, IEnumerable<ISearchableUnit> collection)
         {
-            CliUnitTrie curr = _root;
-            for (int i = 0; i < s.Length; i++)
+            _currentTrie = null;
+            var hash = collection.GetHashCode();
+            if (_tries.TryGetValue(hash, out _currentTrie))
             {
-                if (!curr.Children.ContainsKey(s[i]))
+                foreach (char c in wildcard)
                 {
-
-                    curr.Children.Add(s[i], new TrieNode(s.Substring(0, i + 1)));
-                }
-                curr = curr.Children[s[i]];
-                if (i == s.Length - 1)
-                    curr.IsTerminal = true;
-            }
-        }
-
-        public List<string> GetWordsForPrefix(string pre)
-        {
-            List<string> results = new();
-            CliUnitTrie curr = _root;
-            foreach (char c in pre.ToCharArray())
-            {
-                if (curr.Children.ContainsKey(c))
-                {
-                    curr = curr.Children[c];
-                }
-                else
-                {
-                    return results;
+                    if (_currentTrie.SubTries.ContainsKey(c))
+                    {
+                        _currentTrie = _currentTrie.SubTries[c];
+                    }
+                    else
+                    {
+                        _currentTrie = null;
+                        return false;
+                    }
                 }
             }
-
-
-            FindAllChildWords(curr, results);
-            return results;
+            return false;
         }
 
-        private void FindAllChildWords(CliUnitTrie n, List<string> results)
+        private int FetchTerminalUnits(CliUnitTrie trie)
         {
-            if (n.IsTerminal)
-                results.Add(n.Prefix);
-            foreach (var c in n.Children.Keys)
-            {
-                FindAllChildWords(n.Children[c], results);
-            }
+            _unitsFound.Clear();
+
+            if (trie.IsTerminal)
+                _unitsFound.Add(trie.Unit!);
+
+            foreach (char c in trie.SubTries.Keys)
+                FetchTerminalUnits(trie.SubTries[c]);
+
+            return _unitsFound.Count;
         }
     }
-
-
 }
