@@ -1,5 +1,10 @@
 ﻿#pragma warning disable CS8321 // Local function is declared but never used
 
+//#define COMMAND_EXECUTE_TEST
+#define CLI_UNIT_SEARCH_TEST
+
+
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,11 +14,17 @@ using SmartCLI.Commands;
 
 
 
+
+
+#if (DEBUG && COMMAND_EXECUTE_TEST)
+
+
+
 // new command space
 var testCmdSpace = CommandSpace.ConfigureNew(cmdspace =>
 {
     // command space properties
-    cmdspace.HasName("Test Command Space")
+    cmdspace.HasName("test")
     .HasDescription("This is test.");
 
     // adding new command to command space
@@ -62,13 +73,8 @@ var testCmdSpace = CommandSpace.ConfigureNew(cmdspace =>
     });
 });
 
-
 Console.WriteLine("\nExecution result:");
-
-#if DEBUG
-    testCmdSpace.Commands[0].Execute("13 05.18.2001 kinest@gmail.com 22 7 30 18 88");
-#endif
-
+testCmdSpace.Commands[0].Execute("13 05.18.2001 kinest@gmail.com 22 7 30 18 88");
 
 // target routine to execute.
 static void Routine(TestParams @params)
@@ -111,3 +117,35 @@ public class TestParams : VoidParams
     public double? Weight { get; set; }
     public ICollection<DateTime>? WorkingDays { get; set; }
 }
+
+
+
+
+
+
+
+
+
+
+#elif (DEBUG && CLI_UNIT_SEARCH_TEST)
+
+
+
+var spaces = new List<CommandSpace>()
+{
+    CommandSpace.ConfigureNew(cmdspace => { cmdspace.HasName("test"); }),
+    CommandSpace.ConfigureNew(cmdspace => { cmdspace.HasName("try"); }),
+    CommandSpace.ConfigureNew(cmdspace => { cmdspace.HasName("triff"); }),
+    CommandSpace.ConfigureNew(cmdspace => { cmdspace.HasName("teck"); }),
+    CommandSpace.ConfigureNew(cmdspace => { cmdspace.HasName("super"); }),
+    CommandSpace.ConfigureNew(cmdspace => { cmdspace.HasName("slut"); }),
+    CommandSpace.ConfigureNew(cmdspace => { cmdspace.HasName("slick"); }),
+};
+var engine = CliUnitSearchEngine.Create();
+engine.RegisterUnitCollection(spaces);
+var cmdspace = engine.FindByWildcard("tep", spaces);
+cmdspace = engine.FindByWildcard("te", spaces);
+return 0;
+
+#endif
+
