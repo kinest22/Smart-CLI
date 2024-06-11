@@ -13,7 +13,6 @@ namespace SmartCLI
     {
         private static readonly CliUnitSearchEngine _engine = new();
         private readonly Dictionary<int, CliUnitTrie> _tries;
-        private readonly List<ISearchableUnit> _res;
         private CliUnitTrie? _currentTrie;
 
         static CliUnitSearchEngine()
@@ -26,14 +25,7 @@ namespace SmartCLI
         internal CliUnitSearchEngine()
         {
             _tries = new();
-            _res = new();
         }
-
-        /// <summary>
-        ///     Gets list of found CLI units.
-        /// </summary>
-        public IReadOnlyList<ISearchableUnit> SearchResult 
-            => _res;
 
         /// <summary>
         ///     Creates singleton instance of <see cref="CliUnitSearchEngine"/>.
@@ -48,14 +40,14 @@ namespace SmartCLI
         /// <param name="wildcard">Wildcard (prefix)</param>
         /// <param name="collection">Collection of CLI unis</param>
         /// <returns>Number of CLI units found.</returns>
-        internal int FindByWildcard(string wildcard, IEnumerable<ISearchableUnit> collection)
+        internal int FindByWildcard(string wildcard, IEnumerable<ISearchableUnit> collection, in List<ISearchableUnit> searchResults)
         {
+            // searchResults list is considered to be empty
             int len = 0;
             int hash = collection.GetHashCode();
             if (TryFindTrie(wildcard, hash, out _currentTrie))
             {
-                _res.Clear();
-                len = FetchTerminalUnits(_currentTrie!, in _res);
+                len = FetchTerminalUnits(_currentTrie!, in searchResults);
             }
             return len;
         }
