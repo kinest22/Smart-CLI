@@ -22,7 +22,7 @@ namespace SmartCLI
         /// <summary>
         ///     Creates new instance of <see cref="CliUnitSearchEngine"/>.
         /// </summary>
-        internal CliUnitSearchEngine()
+        private CliUnitSearchEngine()
         {
             _tries = new();
         }
