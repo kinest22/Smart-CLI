@@ -141,10 +141,13 @@ var spaces = new List<CommandSpace>()
     CommandSpace.ConfigureNew(cmdspace => { cmdspace.HasName("slut"); }),
     CommandSpace.ConfigureNew(cmdspace => { cmdspace.HasName("slick"); }),
 };
+
+var res = new List<ISearchableUnit>();
+
 var engine = CliUnitSearchEngine.Create();
 engine.RegisterUnitCollection(spaces);
-var cmdspace = engine.FindByWildcard("tep", spaces);
-cmdspace = engine.FindByWildcard("te", spaces);
+var cmdspace = engine.FindByWildcard("tep", spaces, in res);
+cmdspace = engine.FindByWildcard("te", spaces, in res);
 return 0;
 
 #endif
