@@ -9,7 +9,7 @@ namespace SmartCLI
     /// <summary>
     ///     Represents .
     /// </summary>
-    internal class CliUnitSearchEngine
+    internal sealed class CliUnitSearchEngine
     {
         private static readonly CliUnitSearchEngine _engine = new();
         private readonly Dictionary<int, CliUnitTrie> _tries;
