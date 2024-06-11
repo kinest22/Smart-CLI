@@ -24,14 +24,21 @@ namespace SmartCLI.Commands
         ///     Command space name. Appears when help is used.
         /// </summary>
         public string Name { get; internal set; } = $"Command_space_{_spaceCounter}";
+        
         /// <summary>
         ///     Command space description. Appears when help is used.
         /// </summary>
         public string Description { get; internal set; } = string.Empty;
+        
         /// <summary>
         ///     Set of commands combined in command space.
         /// </summary>
         public IReadOnlyList<Command> Commands => _commands;
+
+        /// <summary>
+        ///     Gets value that indicates whether <see cref="CommandSpace"/> is hidden or not.
+        /// </summary>
+        public bool IsHidden { get; internal set; }
 
         /// <summary>
         ///     Configures new <see cref="CommandSpace"/> using <see cref="CommandSpaceConfigurer"/>.
