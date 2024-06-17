@@ -141,7 +141,7 @@ namespace SmartCLI
             _unitsFound.Clear();
 
 
-            if (_state == State.Initial)
+            if (_state == State.Started)
             {
                 string wildcard = _buffer.ToString(0, _buffer.Length);
                 int len = _searchEngine.FindByWildcard(wildcard, _cmdspaces, in _unitsFound);
@@ -203,7 +203,7 @@ namespace SmartCLI
             {
                 switch (_state)
                 {
-                    case State.Initial:
+                    case State.Started:
                         _spaceDefined = (CommandSpace)_guess!;
                         break;
 
@@ -264,11 +264,14 @@ namespace SmartCLI
 
 
 
-        private enum State
+        internal enum State
         {
-            Initial,
+            Started,
             CommandSpaceDefined,
-            CommandDefined
+            CommandDefined,
+            Completed,
+            InputAborted,
+            CancellationRequested
         }
     }
 
