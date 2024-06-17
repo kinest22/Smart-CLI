@@ -88,7 +88,7 @@ namespace SmartCLI
         /// </summary>
         public IEnumerator<ISearchableUnit> GetEnumerator()
         {
-            return GetEnumerator();
+            return _list.GetEnumerator();
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace SmartCLI
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return _list.GetEnumerator();
+            return this.GetEnumerator();
         }
     }
 
