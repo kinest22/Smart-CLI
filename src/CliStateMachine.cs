@@ -55,6 +55,17 @@ namespace SmartCLI
 
 
 
+        internal void Reset()
+        {
+            _unitsFound.Clear();
+            _buffer.Clear();
+            _tokenStartPosition = 0;
+            _spaceDefined = default;
+            _cmdDefined = default;
+            _guess = default;
+            _wildcard = string.Empty;
+            _prompt = string.Empty;
+        }
 
 
         internal void ProcessInput(ConsoleKeyInfo cki)
