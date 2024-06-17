@@ -23,7 +23,7 @@ namespace SmartCLI
 #pragma warning restore IDE1006 // Naming Styles
 
 
-        private readonly IEnumerable<CommandSpace> _cmdspaces;
+        private readonly IEnumerable<CommandSpace> _cmdContext;
         private readonly CliUnitSearchEngine _searchEngine;
         private readonly CliUnitCollection _unitsFound;
         private readonly StringBuilder _buffer;
@@ -44,7 +44,7 @@ namespace SmartCLI
 
         internal CliStateMachine(IEnumerable<CommandSpace> cmdspaces)
         {
-            _cmdspaces = cmdspaces;
+            _cmdContext = cmdspaces;
             _wildcard = string.Empty;
             _prompt = string.Empty;
             _buffer = new StringBuilder();
@@ -86,6 +86,7 @@ namespace SmartCLI
                     break;
 
                 case (ESC, _):
+                    StopMachine();
                     break;
 
                 case (UARR, _):
@@ -144,7 +145,7 @@ namespace SmartCLI
             if (_state == State.Started)
             {
                 string wildcard = _buffer.ToString(0, _buffer.Length);
-                int len = _searchEngine.FindByWildcard(wildcard, _cmdspaces, in _unitsFound);
+                int len = _searchEngine.FindByWildcard(wildcard, _cmdContext, in _unitsFound);
                 if (len == 0)
                 {
                     return;
@@ -247,11 +248,20 @@ namespace SmartCLI
             _prompt = prev.Name[_wildcard.Length..];
         }
 
+        private void StopMachine()
+        {
+            if (_state == State.Completed)
+            {
+                _state = State.CancellationRequested;
+                return;
+            }
+            _state = State.InputAborted;
+        }
 
         private void RegisterCommandSpaces()
         {
-            _searchEngine.RegisterUnitCollection(_cmdspaces);
-            foreach (CommandSpace space in _cmdspaces)
+            _searchEngine.RegisterUnitCollection(_cmdContext);
+            foreach (CommandSpace space in _cmdContext)
             {
                 _searchEngine.RegisterUnitCollection(space.Commands);
                 foreach (Command cmd in space.Commands)
