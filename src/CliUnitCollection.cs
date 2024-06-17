@@ -18,7 +18,7 @@ namespace SmartCLI
         public CliUnitCollection()
         {
             _list = new List<ISearchableUnit>();
-            _position = -1;
+            _position = 0;
         }
 
         /// <summary>
