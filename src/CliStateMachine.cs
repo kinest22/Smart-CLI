@@ -10,6 +10,7 @@ namespace SmartCLI
 #pragma warning disable IDE1006 // Naming Styles
         private const ConsoleKey BKSP = ConsoleKey.Backspace;
         private const ConsoleKey TAB = ConsoleKey.Tab;
+        private const ConsoleKey SPACE = ConsoleKey.Spacebar;
         private const ConsoleKey ENTR = ConsoleKey.Enter;
         private const ConsoleKey ESC = ConsoleKey.Escape;
         private const ConsoleKey UARR = ConsoleKey.UpArrow;
@@ -24,33 +25,30 @@ namespace SmartCLI
 
         private readonly IEnumerable<CommandSpace> _cmdspaces;
         private readonly CliUnitSearchEngine _searchEngine;
-        private readonly List<ISearchableUnit> _unitsFound;
+        private readonly CliUnitCollection _unitsFound;
         private readonly StringBuilder _buffer;
 
         private State _state;
 
-        private int _pos;
-        private int _space_start_pos;
-        private int _space_end_pos;
-        private int _cmd_start_pos;
-        private int _cmd_end_pos;
+        private int _tokenStartPosition;
+        
 
-
-        private CommandSpace? _spaceGuess;
         private CommandSpace? _spaceDefined;
-        private Command? _cmdGuess;
         private Command? _cmdDefined;
-        private CommandParameter? _optGuess;
 
+        private ISearchableUnit? _guess;
+
+        private string _wildcard;
         private string _prompt;
 
 
         internal CliStateMachine(IEnumerable<CommandSpace> cmdspaces)
         {
             _cmdspaces = cmdspaces;
+            _wildcard = string.Empty;
             _prompt = string.Empty;
             _buffer = new StringBuilder();
-            _unitsFound = new List<ISearchableUnit>();
+            _unitsFound = new CliUnitCollection();
             _searchEngine = CliUnitSearchEngine.Create();
             RegisterCommandSpaces();
         }
@@ -68,9 +66,17 @@ namespace SmartCLI
             switch(key, mod)
             {
                 case (BKSP, _):
+                    RemoveLastFromBuffer();
+                    UpdateStateOnSymbolOrBackspace();
                     break;
 
                 case (TAB, _):
+                    AcceptPrompt();
+                    break;
+
+                case (SPACE, _):
+                    AddToBuffer(ch);
+                    GoToNextToken();
                     break;
 
                 case (ENTR, SHFT):
@@ -83,9 +89,11 @@ namespace SmartCLI
                     break;
 
                 case (UARR, _):
+                    GetNextPrompt();
                     break;
 
                 case (DARR, _):
+                    GetPreviousPrompt();
                     break;
 
                 case (DASH1, _):
@@ -94,21 +102,18 @@ namespace SmartCLI
                 case (DASH2, _):
                     break;
 
-                default:
-                    if ((mod & (ALT | CTRL)) > 0 || ch == '\0')
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        AddToBuffer(ch);
-                        int len = RunSearch();
-                        if (len > 0)
-                        {
+                case (_, ALT):
+                    break;
 
-                        }
-                    }
-                        
+                case (_, CTRL):
+                    break;
+
+                case (_, CTRL | ALT):
+                    break;
+
+                default:
+                    AddToBuffer(ch);
+                    UpdateStateOnSymbolOrBackspace();
                     break;
             }
         }
@@ -119,70 +124,127 @@ namespace SmartCLI
 
         private void AddToBuffer(char ch)
         {
-            _buffer.Append(ch);
-            _pos++;
+            if (ch >= 32 && ch <= 126)
+                _buffer.Append(ch);
         }
 
-        // for symbol, backspace or whitespace
-        private void UpdateState()
+        private void RemoveLastFromBuffer()
+        {
+            if (_buffer.Length == 0)
+                return;
+            _buffer.Remove(_buffer.Length - 1, 1);
+        }
+
+        // for symbol, backspace  (+ mb whitespace ??)
+        private void UpdateStateOnSymbolOrBackspace()
         {
             _unitsFound.Clear();
+
+
             if (_state == State.Initial)
             {
-                string wildcard = _buffer.ToString(_space_start_pos, _pos - _space_start_pos);
+                string wildcard = _buffer.ToString(0, _buffer.Length);
                 int len = _searchEngine.FindByWildcard(wildcard, _cmdspaces, in _unitsFound);
                 if (len == 0)
                 {
                     return;
                 }                
-                else if (len == 1 && _unitsFound[0].Name == wildcard)
+                else if (len == 1 && _unitsFound.GetFirst().Name == wildcard)
                 {
-                    _cmdDefined = (Command)_unitsFound[0];
-                    _state = State.CommandDefined;
-                    // prompt for next token here ..
+                    _spaceDefined = (CommandSpace)_unitsFound.GetFirst();
+                    _state = State.CommandSpaceDefined;
                 }
                 else
                 {
-                    _prompt = _unitsFound[0].Name[len..];
+                    _guess = _unitsFound.GetCurrent();
+                    _prompt = _unitsFound.GetCurrent().Name[wildcard.Length..];
                 }
+            }
+
+
+
+            else if (_state == State.CommandSpaceDefined)
+            {
+                string wildcard = _buffer.ToString(_tokenStartPosition, _buffer.Length - _tokenStartPosition);
+                int len = _searchEngine.FindByWildcard(wildcard, _spaceDefined!.Commands, in _unitsFound);
+                if (len == 0)
+                {
+                    return;
+                }
+                else if (len == 1 && _unitsFound.GetFirst().Name == wildcard)
+                {
+                    _cmdDefined = (Command)_unitsFound.GetFirst();
+                    _state = State.CommandDefined;
+                }
+                else
+                {
+                    _guess = _unitsFound.GetCurrent();
+                    _prompt = _unitsFound.GetCurrent().Name[wildcard.Length..];
+                }
+            }
+
+
+
+            else if (_state == State.CommandDefined)
+            {
+                if (_cmdDefined!.Subcommands.Count > 0)
+                {
+                    string wildcard = _buffer.ToString(_tokenStartPosition, _buffer.Length - _tokenStartPosition);
+                    int len = _searchEngine.FindByWildcard(wildcard, _cmdDefined!.Subcommands, in _unitsFound);
+                }
+            }
+
+        }
+
+
+        private void AcceptPrompt()
+        {
+            if (_prompt != string.Empty)
+            {
+                switch (_state)
+                {
+                    case State.Initial:
+                        _spaceDefined = (CommandSpace)_guess!;
+                        break;
+
+
+                    case State.CommandSpaceDefined:
+                        _cmdDefined = (Command)_guess!;
+                        break;
+
+                    case State.CommandDefined:
+                        // ????
+                        break;                    
+                }
+                _buffer.Append(_prompt);
             }
         }
 
 
-
-
-
-
-        private int RunSearch()
+        private void GoToNextToken()
         {
-            _unitsFound.Clear();
+            _guess = null;
+            _prompt = string.Empty;
+            _wildcard = string.Empty;
+            _tokenStartPosition = _buffer.Length;
+        }
+        
+        private void GetNextPrompt()
+        {
+            if (_unitsFound.Count <= 1)
+                return;
+            var next = _unitsFound.GetNext();
+            _guess = next;
+            _prompt = next.Name[_wildcard.Length..];
+        }
 
-            int len = 0;
-            string wildcard;
-            switch (_state)
-            {
-                case State.Initial:
-                {
-                    wildcard = _buffer.ToString(_space_start_pos, _pos - _space_start_pos);
-                    len = _searchEngine.FindByWildcard(wildcard, _cmdspaces, in _unitsFound);
-                    break;
-                }
-
-                case State.CommandSpaceDefined:
-                {
-                    wildcard = _buffer.ToString(_cmd_start_pos, _pos - _cmd_start_pos);
-                    len = _searchEngine.FindByWildcard(wildcard, _spaceDefined!.Commands, in _unitsFound);
-                    break;
-                }
-
-                case State.CommandDefined: // <---------------------------------------------------------------------------------------- Subcommand !???? 
-                {
-                    wildcard = _buffer.ToString(_cmd_start_pos, _pos - _cmd_start_pos);
-                    len = _searchEngine.FindByWildcard(wildcard, _cmdDefined!.Options, in _unitsFound);
-                    break;
-                }
-            }
-            return len;
+        private void GetPreviousPrompt()
+        {
+            if (_unitsFound.Count <= 1)
+                return;
+            var prev = _unitsFound.GetPrevious();
+            _guess = prev;
+            _prompt = prev.Name[_wildcard.Length..];
         }
 
 
@@ -197,60 +259,8 @@ namespace SmartCLI
                     _searchEngine.RegisterUnitCollection(cmd.Subcommands); // <---------------------------------------------- !!!!! NEED RECURSIVE HERE !!!!
                     _searchEngine.RegisterUnitCollection(cmd.Options);
                 }
-
             }
-        }
-
-
-
-
-        //private string GetNextCommandPrompt(string input, CommandSpace space, out Command? cmd)
-        //{
-        //    cmd = CliUnitSearchEngine.SearchForward(input, space.Commands);
-        //    return GetPrompt(cmd, input);
-        //}
-
-        //private string GetPreviousCommandPrompt(string input, CommandSpace space, out Command? cmd)
-        //{
-        //    cmd = CliUnitSearchEngine.SearchBackward(input, space.Commands);
-        //    return GetPrompt(cmd, input);
-        //}
-
-        //private string GetNextSubcommandPrompt(string input, Command parentCmd, out Command? cmd)
-        //{
-        //    cmd = CliUnitSearchEngine.SearchForward(input, parentCmd.Subcommands);
-        //    return GetPrompt(cmd, input);
-        //}
-
-        //private string GetPreviousSubcommandPrompt(string input, Command parentCmd, out Command? cmd)
-        //{
-        //    cmd = CliUnitSearchEngine.SearchBackward(input, parentCmd.Subcommands);
-        //    return GetPrompt(cmd, input);
-        //}
-
-        //private string GetNextOptionPrompt(string input, Command cmd)
-        //{
-        //    var opt = CliUnitSearchEngine.SearchForward(input, cmd.Options);
-        //    return GetPrompt(opt, input);
-        //}
-
-        //private string GetPreviousOptionPrompt(string input, Command cmd)
-        //{
-        //    var opt = CliUnitSearchEngine.SearchForward(input, cmd.Options);
-        //    return GetPrompt(opt, input);
-        //}
-
-        //private string GetHint(string[] input, Command cmd)
-        //{
-        //    return string.Empty;
-        //}
-
-        private string GetPrompt(ISearchableUnit? unit, string input)
-        {
-            if (unit != null)
-                return unit.Name[input.Length..];
-            return string.Empty;
-        }
+        }        
 
 
 
@@ -261,4 +271,5 @@ namespace SmartCLI
             CommandDefined
         }
     }
+
 }
