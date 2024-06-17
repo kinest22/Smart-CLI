@@ -142,12 +142,14 @@ var spaces = new List<CommandSpace>()
     CommandSpace.ConfigureNew(cmdspace => { cmdspace.HasName("slick"); }),
 };
 
-var res = new List<ISearchableUnit>();
+var res = new CliUnitCollection();
 
 var engine = CliUnitSearchEngine.Create();
 engine.RegisterUnitCollection(spaces);
-var cmdspace = engine.FindByWildcard("tep", spaces, in res);
-cmdspace = engine.FindByWildcard("te", spaces, in res);
+var cmdspace = engine.FindByWildcard("", spaces, in res);
+cmdspace = engine.FindByWildcard("te\0", spaces, in res);
+
+
 return 0;
 
 #endif
