@@ -130,5 +130,25 @@ namespace SmartCLI
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         private static extern bool WriteConsoleOutputCharacter(nint hConsoleOutput, string lpCharacter,                
                 uint nLength, COORD dwWriteCoord, out uint lpNumberOfCharsWritten);
+
+
+
+        /// <summary>
+        ///     Defines the coordinates of a character cell in a console screen buffer. 
+        ///     The origin of the coordinate system (0,0) is at the top, left cell of the buffer.
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential)]
+        private readonly struct COORD
+        {
+            public readonly short x; // row number from current pos 
+            public readonly short y; // col number from current pos
+
+            public COORD(short x, short y)
+            {
+                this.x = x;
+                this.y = y;
+            }
+
+        }
     }
 }
