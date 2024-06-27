@@ -69,7 +69,7 @@ namespace SmartCLI
 
 
         internal void ProcessInput(ConsoleKeyInfo cki)
-        {
+        {            
             var key = cki.Key;
             var mod = cki.Modifiers;
             var ch = cki.KeyChar;
@@ -261,12 +261,9 @@ namespace SmartCLI
 
         private void StopMachine()
         {
-            if (_state == State.Completed)
-            {
-                _state = State.CancellationRequested;
-                return;
-            }
-            _state = State.InputAborted;
+            _state = _state == State.Completed 
+                ? State.CancellationRequested 
+                : State.InputAborted;
         }
 
         private void RegisterCommandSpaces()
