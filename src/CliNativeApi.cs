@@ -9,7 +9,7 @@ namespace SmartCLI
     /// <summary>
     ///     Wrapper class over native Windows console API functions.
     /// </summary>
-    public static class NativeConsoleApi
+    internal static class CliNativeApi
     {
         private const int STD_OUTPUT_HANDLE = -11;
 
@@ -24,7 +24,7 @@ namespace SmartCLI
         
         private static readonly nint _stdioHandle;
 
-        static NativeConsoleApi()        
+        static CliNativeApi()        
             => _stdioHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 
         /// <summary>
