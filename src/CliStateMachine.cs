@@ -1,6 +1,7 @@
 ﻿using SmartCLI.Commands;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SmartCLI
@@ -33,24 +34,24 @@ namespace SmartCLI
         private int _tokenStartPosition;
         
 
-        private CommandSpace? _spaceDefined;
-        private Command? _cmdDefined;
 
-        private ISearchableUnit? _guess;
+        private ISearchableUnit? _unitGuess;
+        private ISearchableUnit? _spaceDefined;
+        private ISearchableUnit? _cmdDefined;
 
         private string _wildcard;
         private string _prompt;
 
 
-        internal CliStateMachine(IEnumerable<CommandSpace> cmdspaces)
+        internal CliStateMachine(IEnumerable<CommandSpace> cmdContext)
         {
-            _cmdContext = cmdspaces;
+            _cmdContext = cmdContext;
             _wildcard = string.Empty;
             _prompt = string.Empty;
             _buffer = new StringBuilder();
             _unitsFound = new CliUnitCollection();
             _searchEngine = CliUnitSearchEngine.Create();
-            RegisterCommandSpaces();
+            RegisterCommandContext(cmdContext);
         }
 
 
@@ -62,7 +63,7 @@ namespace SmartCLI
             _tokenStartPosition = 0;
             _spaceDefined = default;
             _cmdDefined = default;
-            _guess = default;
+            _unitGuess = default;
             _wildcard = string.Empty;
             _prompt = string.Empty;
         }
@@ -78,7 +79,7 @@ namespace SmartCLI
             {
                 case (BKSP, _):
                     RemoveLastFromBuffer();
-                    UpdateStateOnSymbolOrBackspace();
+                    UpdateState();
                     break;
 
                 case (TAB, _):
@@ -125,7 +126,7 @@ namespace SmartCLI
 
                 default:
                     AddToBuffer(ch);
-                    UpdateStateOnSymbolOrBackspace();
+                    UpdateState();
                     break;
             }
         }
@@ -147,66 +148,63 @@ namespace SmartCLI
             _buffer.Remove(_buffer.Length - 1, 1);
         }
 
-        // for symbol, backspace  (+ mb whitespace ??)
-        private void UpdateStateOnSymbolOrBackspace()
+        // for symbol, backspace 
+        private void UpdateState()
         {
-            _unitsFound.Clear();
-
+            string wildcard = GetCurrentWildcard();
 
             if (_state == State.Started)
             {
-                string wildcard = _buffer.ToString(0, _buffer.Length);
-                int len = _searchEngine.FindByWildcard(wildcard, _cmdContext, in _unitsFound);
-                if (len == 0)
-                {
-                    return;
-                }                
-                else if (len == 1 && _unitsFound.GetFirst().Name == wildcard)
-                {
-                    _spaceDefined = (CommandSpace)_unitsFound.GetFirst();
-                    _state = State.CommandSpaceDefined;
-                }
-                else
-                {
-                    _guess = _unitsFound.GetCurrent();
-                    _prompt = _unitsFound.GetCurrent().Name[wildcard.Length..];
-                }
+                if (TryDefineUnit(wildcard, _cmdContext, out _spaceDefined))                
+                    _state = State.CommandSpaceDefined;                              
             }
-
-
 
             else if (_state == State.CommandSpaceDefined)
             {
-                string wildcard = _buffer.ToString(_tokenStartPosition, _buffer.Length - _tokenStartPosition);
-                int len = _searchEngine.FindByWildcard(wildcard, _spaceDefined!.Commands, in _unitsFound);
-                if (len == 0)
-                {
-                    return;
-                }
-                else if (len == 1 && _unitsFound.GetFirst().Name == wildcard)
-                {
-                    _cmdDefined = (Command)_unitsFound.GetFirst();
-                    _state = State.CommandDefined;
-                }
-                else
-                {
-                    _guess = _unitsFound.GetCurrent();
-                    _prompt = _unitsFound.GetCurrent().Name[wildcard.Length..];
-                }
+                if (TryDefineUnit(wildcard, _spaceDefined!.SubUnits, out _cmdDefined))                
+                    _state = State.CommandDefined;                
             }
-
-
 
             else if (_state == State.CommandDefined)
             {
-                if (_cmdDefined!.Subcommands.Count > 0)
-                {
-                    string wildcard = _buffer.ToString(_tokenStartPosition, _buffer.Length - _tokenStartPosition);
-                    int len = _searchEngine.FindByWildcard(wildcard, _cmdDefined!.Subcommands, in _unitsFound);
-                }
+                if (TryDefineUnit(wildcard, _cmdDefined!.SubUnits, out var defined))
+                    if (defined!.IsParameter)
+                        _state = State.OptionDefined;
+            }
+
+            else if (_state == State.OptionDefined)
+            {
+
             }
 
         }
+
+
+        private bool TryDefineUnit(string wildcard, IEnumerable<ISearchableUnit> units, out ISearchableUnit? unitDefined)
+        {
+            _unitsFound.Clear();
+            int len = _searchEngine.FindByWildcard(wildcard, units, in _unitsFound);
+            if (len == 0)
+            {
+                unitDefined = null;
+                return false;
+            }
+            else if (len == 1 && _unitsFound.GetFirst().Name == wildcard)
+            {
+                unitDefined = _unitsFound.GetFirst();
+                return true;
+            }
+            else
+            {
+                _unitGuess = _unitsFound.GetCurrent();
+                _prompt = _unitsFound.GetCurrent().Name[wildcard.Length..];
+                unitDefined = null;
+                return false;
+            }
+        }
+
+
+
 
 
         private void AcceptPrompt()
@@ -216,12 +214,12 @@ namespace SmartCLI
                 switch (_state)
                 {
                     case State.Started:
-                        _spaceDefined = (CommandSpace)_guess!;
+                        _spaceDefined = _unitGuess!;
                         break;
 
 
                     case State.CommandSpaceDefined:
-                        _cmdDefined = (Command)_guess!;
+                        _cmdDefined = _unitGuess!;
                         break;
 
                     case State.CommandDefined:
@@ -235,7 +233,7 @@ namespace SmartCLI
 
         private void GoToNextToken()
         {
-            _guess = null;
+            _unitGuess = null;
             _prompt = string.Empty;
             _wildcard = string.Empty;
             _tokenStartPosition = _buffer.Length;
@@ -246,7 +244,7 @@ namespace SmartCLI
             if (_unitsFound.Count <= 1)
                 return;
             var next = _unitsFound.GetNext();
-            _guess = next;
+            _unitGuess = next;
             _prompt = next.Name[_wildcard.Length..];
         }
 
@@ -255,7 +253,7 @@ namespace SmartCLI
             if (_unitsFound.Count <= 1)
                 return;
             var prev = _unitsFound.GetPrevious();
-            _guess = prev;
+            _unitGuess = prev;
             _prompt = prev.Name[_wildcard.Length..];
         }
 
@@ -266,19 +264,23 @@ namespace SmartCLI
                 : State.InputAborted;
         }
 
-        private void RegisterCommandSpaces()
+
+
+
+        private void RegisterCommandContext(IEnumerable<ISearchableUnit> units)
         {
-            _searchEngine.RegisterUnitCollection(_cmdContext);
-            foreach (CommandSpace space in _cmdContext)
-            {
-                _searchEngine.RegisterUnitCollection(space.Commands);
-                foreach (Command cmd in space.Commands)
-                {
-                    _searchEngine.RegisterUnitCollection(cmd.Subcommands); // <---------------------------------------------- !!!!! NEED RECURSIVE HERE !!!!
-                    _searchEngine.RegisterUnitCollection(cmd.Options);
-                }
-            }
-        }        
+            _searchEngine.RegisterUnitCollection(units);
+            foreach (var unit in units)
+                if (unit.SubUnits.Any())
+                    RegisterCommandContext(unit.SubUnits);
+        }
+
+        private string GetCurrentWildcard()
+        {
+            int startIndex = _tokenStartPosition;
+            int length = _buffer.Length - _tokenStartPosition;
+            return _buffer.ToString(startIndex, length);
+        }
 
 
 
@@ -287,6 +289,7 @@ namespace SmartCLI
             Started,
             CommandSpaceDefined,
             CommandDefined,
+            OptionDefined,
             Completed,
             InputAborted,
             CancellationRequested
