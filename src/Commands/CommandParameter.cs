@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace SmartCLI.Commands
 {
@@ -74,6 +76,14 @@ namespace SmartCLI.Commands
         ///     Number style bitmask used to format numeric command paramters.
         /// </summary>
         public NumberStyles? NumberStyle { get; internal set; }
+
+
+        public IEnumerable<ISearchableUnit> SubUnits 
+            => Enumerable.Empty<ISearchableUnit>();
+
+
+        public bool IsParameter 
+            => true;
 
         /// <summary>
         ///     Accepts parser (visitor) to get parsed value.

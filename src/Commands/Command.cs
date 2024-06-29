@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SmartCLI.Commands
@@ -85,6 +86,15 @@ namespace SmartCLI.Commands
         ///     Parameters instance used by command as set of arguments and options.
         /// </summary>
         internal VoidParams Params => _params;
+
+        public IEnumerable<ISearchableUnit> SubUnits
+            => _subcmds.Cast<ISearchableUnit>().Concat(_opts);
+
+        public bool IsParameter 
+            => false;
+
+
+
 
         /// <summary>
         ///     Executes the <see cref="TargetRoutine"/> of the command.

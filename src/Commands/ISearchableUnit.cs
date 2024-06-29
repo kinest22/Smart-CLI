@@ -1,4 +1,7 @@
-﻿namespace SmartCLI.Commands
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace SmartCLI.Commands
 {
     /// <summary>
     ///     Represents basic CLI unit that is subject to search.
@@ -14,5 +17,9 @@
         ///     Identifies whether the CLI unit is hidden for search.
         /// </summary>
         public bool IsHidden { get; }
+         
+        public IEnumerable<ISearchableUnit> SubUnits { get; }
+
+        public bool IsParameter { get; }
     }
 }
