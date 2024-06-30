@@ -26,7 +26,7 @@ namespace SmartCLI
 
         private readonly IEnumerable<CommandSpace> _cmdContext;
         private readonly CliUnitSearchEngine _searchEngine;
-        private readonly CliUnitCollection _unitsFound;
+        private readonly CliUnitSearchResults _unitsFound;
         private readonly StringBuilder _buffer;
 
         private State _state;
@@ -49,7 +49,7 @@ namespace SmartCLI
             _wildcard = string.Empty;
             _prompt = string.Empty;
             _buffer = new StringBuilder();
-            _unitsFound = new CliUnitCollection();
+            _unitsFound = new CliUnitSearchResults();
             _searchEngine = CliUnitSearchEngine.Create();
             RegisterCommandContext(cmdContext);
         }

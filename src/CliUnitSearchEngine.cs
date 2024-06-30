@@ -40,7 +40,7 @@ namespace SmartCLI
         /// <param name="wildcard">Wildcard (prefix)</param>
         /// <param name="collection">Collection of CLI unis</param>
         /// <returns>Number of CLI units found.</returns>
-        internal int FindByWildcard(string wildcard, IEnumerable<ICliUnit> collection, in CliUnitCollection searchResults)
+        internal int FindByWildcard(string wildcard, IEnumerable<ICliUnit> collection, in CliUnitSearchResults searchResults)
         {
             // searchResults list is considered to be empty
             int len = 0;
@@ -101,7 +101,7 @@ namespace SmartCLI
         ///     Fetches all units from all terminal <see cref="CliUnitTrie"/>s of specified trie.
         /// </summary>
         /// <returns>Number of CLI unts found.</returns>
-        private int FetchTerminalUnits(CliUnitTrie trie, in CliUnitCollection found)
+        private int FetchTerminalUnits(CliUnitTrie trie, in CliUnitSearchResults found)
         {
             if (trie.IsTerminal)
                 found.Add(trie.Unit!);

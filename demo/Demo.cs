@@ -142,7 +142,7 @@ var spaces = new List<CommandSpace>()
     CommandSpace.ConfigureNew(cmdspace => { cmdspace.HasName("slick"); }),
 };
 
-var res = new CliUnitCollection();
+var res = new CliUnitSearchResults();
 
 var engine = CliUnitSearchEngine.Create();
 engine.RegisterUnitCollection(spaces);

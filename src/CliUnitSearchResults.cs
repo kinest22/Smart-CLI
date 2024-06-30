@@ -5,17 +5,17 @@ using System.Collections.Generic;
 namespace SmartCLI
 {
     /// <summary>
-    ///     Represents circular collection of CLI unit that are subject to search.
+    ///     Represents circular collection of CLI units found by <see cref="CliUnitSearchEngine"/>.
     /// </summary>
-    public sealed class CliUnitCollection : IEnumerable<ICliUnit>  
+    public sealed class CliUnitSearchResults : IEnumerable<ICliUnit>  
     {
         private readonly List<ICliUnit> _list;
         private int _position;
 
         /// <summary>
-        ///     Creates new instance of <see cref="CliUnitCollection"/>.
+        ///     Creates new instance of <see cref="CliUnitSearchResults"/>.
         /// </summary>
-        public CliUnitCollection()
+        public CliUnitSearchResults()
         {
             _list = new List<ICliUnit>();
             _position = 0;
