@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SmartCLI
 {
-    internal class CliStateMachine
+    internal sealed class CliStateMachine
     {
 #pragma warning disable IDE1006 // Naming Styles
         private const ConsoleKey BKSP = ConsoleKey.Backspace;
@@ -95,6 +95,7 @@ namespace SmartCLI
                     break;
 
                 case (ENTR, _):
+                    Complete();
                     break;
 
                 case (ESC, _):
@@ -107,12 +108,6 @@ namespace SmartCLI
 
                 case (DARR, _):
                     GetPreviousPrompt();
-                    break;
-
-                case (DASH1, _):
-                    break;
-
-                case (DASH2, _):
                     break;
 
                 case (_, ALT):
@@ -264,7 +259,10 @@ namespace SmartCLI
                 : State.InputAborted;
         }
 
-
+        private void Complete()
+        {
+            _state = State.Completed;
+        }
 
 
         private void RegisterCommandContext(IEnumerable<ICliUnit> units)
