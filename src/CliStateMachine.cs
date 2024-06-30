@@ -24,7 +24,7 @@ namespace SmartCLI
 #pragma warning restore IDE1006 // Naming Styles
 
 
-        private readonly IEnumerable<CommandSpace> _cmdContext;
+        private readonly CliCommandHierarchy _hierarchy;
         private readonly CliUnitSearchEngine _searchEngine;
         private readonly CliUnitSearchResults _unitsFound;
         private readonly StringBuilder _buffer;
@@ -43,15 +43,15 @@ namespace SmartCLI
         private string _prompt;
 
 
-        internal CliStateMachine(IEnumerable<CommandSpace> cmdContext)
+        internal CliStateMachine(CliCommandHierarchy hierarchy)
         {
-            _cmdContext = cmdContext;
+            _hierarchy = hierarchy;
             _wildcard = string.Empty;
             _prompt = string.Empty;
             _buffer = new StringBuilder();
             _unitsFound = new CliUnitSearchResults();
             _searchEngine = CliUnitSearchEngine.Create();
-            RegisterCommandContext(cmdContext);
+            RegisterCommandContext(hierarchy);
         }
 
 
@@ -143,14 +143,14 @@ namespace SmartCLI
             _buffer.Remove(_buffer.Length - 1, 1);
         }
 
-        // for symbol, backspace 
+
         private void UpdateState()
         {
             string wildcard = GetCurrentWildcard();
 
             if (_state == State.Started)
             {
-                if (TryDefineUnit(wildcard, _cmdContext, out _spaceDefined))                
+                if (TryDefineUnit(wildcard, _hierarchy, out _spaceDefined))                
                     _state = State.CommandSpaceDefined;                              
             }
 
@@ -164,7 +164,10 @@ namespace SmartCLI
             {
                 if (TryDefineUnit(wildcard, _cmdDefined!.SubUnits, out var defined))
                     if (defined!.IsParameter)
+                    {
+
                         _state = State.OptionDefined;
+                    }
             }
 
             else if (_state == State.OptionDefined)
@@ -192,7 +195,7 @@ namespace SmartCLI
             else
             {
                 _unitGuess = _unitsFound.GetCurrent();
-                _prompt = _unitsFound.GetCurrent().Name[wildcard.Length..];
+                _prompt = _unitGuess.Name[wildcard.Length..];
                 unitDefined = null;
                 return false;
             }
