@@ -8,7 +8,7 @@ namespace SmartCLI.Commands
     /// <summary>
     ///     Represents console command.
     /// </summary>
-    public class Command : ISearchableUnit
+    public class Command : ICliUnit
     {
         private static int _cmdCounter = 1;
         private readonly VoidParams _params;
@@ -87,8 +87,8 @@ namespace SmartCLI.Commands
         /// </summary>
         internal VoidParams Params => _params;
 
-        public IEnumerable<ISearchableUnit> SubUnits
-            => _subcmds.Cast<ISearchableUnit>().Concat(_opts);
+        public IEnumerable<ICliUnit> SubUnits
+            => _subcmds.Cast<ICliUnit>().Concat(_opts);
 
         public bool IsParameter 
             => false;

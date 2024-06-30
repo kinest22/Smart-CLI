@@ -7,9 +7,9 @@ namespace SmartCLI
     /// <summary>
     ///     Represents circular collection of CLI unit that are subject to search.
     /// </summary>
-    public sealed class CliUnitCollection : IEnumerable<ISearchableUnit>  
+    public sealed class CliUnitCollection : IEnumerable<ICliUnit>  
     {
-        private readonly List<ISearchableUnit> _list;
+        private readonly List<ICliUnit> _list;
         private int _position;
 
         /// <summary>
@@ -17,7 +17,7 @@ namespace SmartCLI
         /// </summary>
         public CliUnitCollection()
         {
-            _list = new List<ISearchableUnit>();
+            _list = new List<ICliUnit>();
             _position = 0;
         }
 
@@ -30,10 +30,10 @@ namespace SmartCLI
         }
             
         /// <summary>
-        ///     Adds new <see cref="ISearchableUnit"/> to this collection.
+        ///     Adds new <see cref="ICliUnit"/> to this collection.
         /// </summary>
         /// <param name="item"></param>
-        public void Add(ISearchableUnit item)
+        public void Add(ICliUnit item)
         {
             _list.Add(item);
         }
@@ -50,7 +50,7 @@ namespace SmartCLI
         /// <summary>
         ///     Gets the first element contained in this colleciton.
         /// </summary>
-        public ISearchableUnit GetFirst()
+        public ICliUnit GetFirst()
         {
             return _list[0];
         }
@@ -58,7 +58,7 @@ namespace SmartCLI
         /// <summary>
         ///     Gets current element of this colleciton.
         /// </summary>
-        public ISearchableUnit GetCurrent()
+        public ICliUnit GetCurrent()
         {
             return _list[_position];
         }
@@ -66,7 +66,7 @@ namespace SmartCLI
         /// <summary>
         ///     Gets next or first element of this collection.
         /// </summary>
-        public ISearchableUnit GetNext()
+        public ICliUnit GetNext()
         {
             if (_position + 1 >= _list.Count)
                 _position = -1;
@@ -76,7 +76,7 @@ namespace SmartCLI
         /// <summary>
         ///     Gets previous or last element of this collection.
         /// </summary>
-        public ISearchableUnit GetPrevious()
+        public ICliUnit GetPrevious()
         {
             if (_position - 1 <= -1)
                 _position = _list.Count;
@@ -86,7 +86,7 @@ namespace SmartCLI
         /// <summary>
         ///     Gets an enumerator that iterates through a collection.
         /// </summary>
-        public IEnumerator<ISearchableUnit> GetEnumerator()
+        public IEnumerator<ICliUnit> GetEnumerator()
         {
             return _list.GetEnumerator();
         }

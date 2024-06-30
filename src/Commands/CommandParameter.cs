@@ -8,7 +8,7 @@ namespace SmartCLI.Commands
     /// <summary>
     ///     Represents parameter of command. This could be command argument or command option (starts with hyphens prefix).
     /// </summary>
-    public abstract class CommandParameter : ISearchableUnit
+    public abstract class CommandParameter : ICliUnit
     {
         private protected readonly Delegate _valueProvider;
 
@@ -78,8 +78,8 @@ namespace SmartCLI.Commands
         public NumberStyles? NumberStyle { get; internal set; }
 
 
-        public IEnumerable<ISearchableUnit> SubUnits 
-            => Enumerable.Empty<ISearchableUnit>();
+        public IEnumerable<ICliUnit> SubUnits 
+            => Enumerable.Empty<ICliUnit>();
 
 
         public bool IsParameter 

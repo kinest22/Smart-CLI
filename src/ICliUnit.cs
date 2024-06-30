@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SmartCLI.Commands
 {
     /// <summary>
     ///     Represents basic CLI unit that is subject to search.
     /// </summary>
-    public interface ISearchableUnit
+    public interface ICliUnit
     {
         /// <summary>
         ///     CLI unit name that is used for search.
@@ -18,7 +17,7 @@ namespace SmartCLI.Commands
         /// </summary>
         public bool IsHidden { get; }
          
-        public IEnumerable<ISearchableUnit> SubUnits { get; }
+        public IEnumerable<ICliUnit> SubUnits { get; }
 
         public bool IsParameter { get; }
     }

@@ -40,7 +40,7 @@ namespace SmartCLI
         /// <param name="wildcard">Wildcard (prefix)</param>
         /// <param name="collection">Collection of CLI unis</param>
         /// <returns>Number of CLI units found.</returns>
-        internal int FindByWildcard(string wildcard, IEnumerable<ISearchableUnit> collection, in CliUnitCollection searchResults)
+        internal int FindByWildcard(string wildcard, IEnumerable<ICliUnit> collection, in CliUnitCollection searchResults)
         {
             // searchResults list is considered to be empty
             int len = 0;
@@ -56,7 +56,7 @@ namespace SmartCLI
         ///     Registrates CLI unit collection and builds its <see cref="CliUnitTrie"/> for futher search.
         /// </summary>
         /// <param name="collection">CLI unit collection.</param>
-        internal void RegisterUnitCollection(IEnumerable<ISearchableUnit> collection)
+        internal void RegisterUnitCollection(IEnumerable<ICliUnit> collection)
         {
             var hash = collection.GetHashCode();
             if (_tries.ContainsKey(hash))

@@ -9,7 +9,7 @@ namespace SmartCLI.Commands
     /// <summary>
     ///     Represents logically grouped set of commands.
     /// </summary>
-    public class CommandSpace : ISearchableUnit
+    public class CommandSpace : ICliUnit
     {
         private static int _spaceCounter = 1;
         private readonly List<Command> _commands;
@@ -41,7 +41,7 @@ namespace SmartCLI.Commands
         public bool IsHidden { get; internal set; }
 
 
-        public IEnumerable<ISearchableUnit> SubUnits 
+        public IEnumerable<ICliUnit> SubUnits 
             => _commands;
 
         public bool IsParameter 

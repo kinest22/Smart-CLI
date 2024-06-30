@@ -35,9 +35,9 @@ namespace SmartCLI
         
 
 
-        private ISearchableUnit? _unitGuess;
-        private ISearchableUnit? _spaceDefined;
-        private ISearchableUnit? _cmdDefined;
+        private ICliUnit? _unitGuess;
+        private ICliUnit? _spaceDefined;
+        private ICliUnit? _cmdDefined;
 
         private string _wildcard;
         private string _prompt;
@@ -180,7 +180,7 @@ namespace SmartCLI
         }
 
 
-        private bool TryDefineUnit(string wildcard, IEnumerable<ISearchableUnit> units, out ISearchableUnit? unitDefined)
+        private bool TryDefineUnit(string wildcard, IEnumerable<ICliUnit> units, out ICliUnit? unitDefined)
         {
             _unitsFound.Clear();
             int len = _searchEngine.FindByWildcard(wildcard, units, in _unitsFound);
@@ -267,7 +267,7 @@ namespace SmartCLI
 
 
 
-        private void RegisterCommandContext(IEnumerable<ISearchableUnit> units)
+        private void RegisterCommandContext(IEnumerable<ICliUnit> units)
         {
             _searchEngine.RegisterUnitCollection(units);
             foreach (var unit in units)

@@ -18,7 +18,7 @@ namespace SmartCLI
             _childTries = new();
         }
 
-        private CliUnitTrie(ISearchableUnit? unit) : this()
+        private CliUnitTrie(ICliUnit? unit) : this()
         {            
             Unit = unit;
             if (unit != null)
@@ -42,7 +42,7 @@ namespace SmartCLI
         ///     Gets CLI unit associated with this <see cref="CliUnitTrie"/>. 
         ///     If this <see cref="CliUnitTrie"/> is not ternial associated CLI unit is null.
         /// </summary>
-        public ISearchableUnit? Unit { get; init; }
+        public ICliUnit? Unit { get; init; }
         
         /// <summary>
         ///     Gets all keys contained in this <see cref="CliUnitTrie"/>.
@@ -85,7 +85,7 @@ namespace SmartCLI
         /// <summary>
         ///     Populates the <see cref="CliUnitTrie"/> with specified CLI unit.
         /// </summary>
-        public void PopulateWith(ISearchableUnit unit)
+        public void PopulateWith(ICliUnit unit)
         {
             var currTrie = this;
             var unitName = unit.Name;
