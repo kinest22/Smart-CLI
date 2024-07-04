@@ -8,6 +8,17 @@ namespace SmartCLI
 {
     internal sealed class CliStateMachine
     {
+        internal enum State
+        {
+            Started,
+            CommandSpaceDefined,
+            CommandDefined,
+            OptionDefined,
+            Completed,
+            InputAborted,
+            CancellationRequested
+        }
+
 #pragma warning disable IDE1006 // Naming Styles
         private const ConsoleKey BKSP = ConsoleKey.Backspace;
         private const ConsoleKey TAB = ConsoleKey.Tab;
@@ -24,11 +35,12 @@ namespace SmartCLI
 #pragma warning restore IDE1006 // Naming Styles
 
 
-        private readonly CliCommandHierarchy _hierarchy;
         private readonly CliUnitSearchEngine _searchEngine;
         private readonly CliUnitSearchResults _unitsFound;
         private readonly StringBuilder _buffer;
 
+
+        private IEnumerable<ICliUnit> _units;
         private State _state;
 
         private int _tokenStartPosition;
@@ -38,6 +50,7 @@ namespace SmartCLI
         private ICliUnit? _unitGuess;
         private ICliUnit? _spaceDefined;
         private ICliUnit? _cmdDefined;
+        private ICliUnit? _optDefined;
 
         private string _wildcard;
         private string _prompt;
@@ -45,13 +58,13 @@ namespace SmartCLI
 
         internal CliStateMachine(CliCommandHierarchy hierarchy)
         {
-            _hierarchy = hierarchy;
             _wildcard = string.Empty;
             _prompt = string.Empty;
             _buffer = new StringBuilder();
             _unitsFound = new CliUnitSearchResults();
             _searchEngine = CliUnitSearchEngine.Create();
-            RegisterCommandContext(hierarchy);
+            _units = hierarchy;
+            RegisterCommandHierarchy(hierarchy);
         }
 
 
@@ -148,33 +161,51 @@ namespace SmartCLI
         {
             string wildcard = GetCurrentWildcard();
 
-            if (_state == State.Started)
-            {
-                if (TryDefineUnit(wildcard, _hierarchy, out _spaceDefined))                
-                    _state = State.CommandSpaceDefined;                              
-            }
 
-            else if (_state == State.CommandSpaceDefined)
+            if (TryDefineUnit(wildcard, _units, out var unit))
             {
-                if (TryDefineUnit(wildcard, _spaceDefined!.SubUnits, out _cmdDefined))                
-                    _state = State.CommandDefined;                
-            }
+                // redefine current collection of CLI units
+                _units = unit!.SubUnits;
 
-            else if (_state == State.CommandDefined)
-            {
-                if (TryDefineUnit(wildcard, _cmdDefined!.SubUnits, out var defined))
-                    if (defined!.IsParameter)
+                // command space is now fully defined
+                if (_state == State.Started)
+                {
+                    _spaceDefined = unit;
+                    _state = State.CommandSpaceDefined;
+                }
+
+                // command is now fully defined
+                else if (_state == State.CommandSpaceDefined)
+                {
+                    _cmdDefined = unit;
+                    _state = State.CommandDefined;
+                }
+
+                // either subcmd or option is now fully defined
+                else if (_state == State.CommandDefined)
+                {
+                    // option defined
+                    if (unit!.IsParameter) 
                     {
-
+                        _optDefined = unit;
                         _state = State.OptionDefined;
                     }
-            }
+                    // subcmd defined
+                    else
+                    {
+                        _cmdDefined = unit;
+                    }
+                }
 
-            else if (_state == State.OptionDefined)
+                else if (_state == State.OptionDefined)
+                {
+
+                }
+            }
+            else
             {
-
+                _prompt = DefinePrompt(wildcard);
             }
-
         }
 
 
@@ -182,26 +213,24 @@ namespace SmartCLI
         {
             _unitsFound.Clear();
             int len = _searchEngine.FindByWildcard(wildcard, units, in _unitsFound);
-            if (len == 0)
-            {
-                unitDefined = null;
-                return false;
-            }
-            else if (len == 1 && _unitsFound.GetFirst().Name == wildcard)
+            if (len == 1 && _unitsFound.GetFirst().Name == wildcard)
             {
                 unitDefined = _unitsFound.GetFirst();
                 return true;
             }
             else
             {
-                _unitGuess = _unitsFound.GetCurrent();
-                _prompt = _unitGuess.Name[wildcard.Length..];
                 unitDefined = null;
                 return false;
             }
         }
 
 
+        private string DefinePrompt(string wildcard)
+        {
+            ICliUnit currentGuess = _unitsFound.GetCurrent();
+            return currentGuess.Name[wildcard.Length..];
+        }
 
 
 
@@ -268,12 +297,12 @@ namespace SmartCLI
         }
 
 
-        private void RegisterCommandContext(IEnumerable<ICliUnit> units)
+        private void RegisterCommandHierarchy(IEnumerable<ICliUnit> units)
         {
             _searchEngine.RegisterUnitCollection(units);
             foreach (var unit in units)
                 if (unit.SubUnits.Any())
-                    RegisterCommandContext(unit.SubUnits);
+                    RegisterCommandHierarchy(unit.SubUnits);
         }
 
         private string GetCurrentWildcard()
@@ -285,16 +314,7 @@ namespace SmartCLI
 
 
 
-        internal enum State
-        {
-            Started,
-            CommandSpaceDefined,
-            CommandDefined,
-            OptionDefined,
-            Completed,
-            InputAborted,
-            CancellationRequested
-        }
+        
     }
 
 }
