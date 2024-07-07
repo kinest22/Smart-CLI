@@ -8,6 +8,9 @@ namespace SmartCLI
 {
     internal sealed class CliStateMachine
     {
+        /// <summary>
+        ///     CLI state machine possible states.
+        /// </summary>
         internal enum State
         {
             Started,
@@ -20,18 +23,18 @@ namespace SmartCLI
         }
 
 #pragma warning disable IDE1006 // Naming Styles
-        private const ConsoleKey BKSP = ConsoleKey.Backspace;
-        private const ConsoleKey TAB = ConsoleKey.Tab;
-        private const ConsoleKey SPACE = ConsoleKey.Spacebar;
-        private const ConsoleKey ENTR = ConsoleKey.Enter;
-        private const ConsoleKey ESC = ConsoleKey.Escape;
-        private const ConsoleKey UARR = ConsoleKey.UpArrow;
-        private const ConsoleKey DARR = ConsoleKey.DownArrow;
-        private const ConsoleKey DASH1 = ConsoleKey.Subtract;
-        private const ConsoleKey DASH2 = ConsoleKey.OemMinus;
-        private const ConsoleModifiers ALT = ConsoleModifiers.Alt;
-        private const ConsoleModifiers SHFT = ConsoleModifiers.Shift;
-        private const ConsoleModifiers CTRL = ConsoleModifiers.Control;
+        private const ConsoleKey BKSP           = ConsoleKey.Backspace;
+        private const ConsoleKey TAB            = ConsoleKey.Tab;
+        private const ConsoleKey SPACE          = ConsoleKey.Spacebar;
+        private const ConsoleKey ENTR           = ConsoleKey.Enter;
+        private const ConsoleKey ESC            = ConsoleKey.Escape;
+        private const ConsoleKey UARR           = ConsoleKey.UpArrow;
+        private const ConsoleKey DARR           = ConsoleKey.DownArrow;
+        private const ConsoleKey DASH1          = ConsoleKey.Subtract;
+        private const ConsoleKey DASH2          = ConsoleKey.OemMinus;
+        private const ConsoleModifiers ALT      = ConsoleModifiers.Alt;
+        private const ConsoleModifiers SHFT     = ConsoleModifiers.Shift;
+        private const ConsoleModifiers CTRL     = ConsoleModifiers.Control;
 #pragma warning restore IDE1006 // Naming Styles
 
 
@@ -97,6 +100,7 @@ namespace SmartCLI
 
                 case (TAB, _):
                     AcceptPrompt();
+                    UpdateState();
                     break;
 
                 case (SPACE, _):
@@ -236,25 +240,8 @@ namespace SmartCLI
 
         private void AcceptPrompt()
         {
-            if (_prompt != string.Empty)
-            {
-                switch (_state)
-                {
-                    case State.Started:
-                        _spaceDefined = _unitGuess!;
-                        break;
-
-
-                    case State.CommandSpaceDefined:
-                        _cmdDefined = _unitGuess!;
-                        break;
-
-                    case State.CommandDefined:
-                        // ????
-                        break;                    
-                }
-                _buffer.Append(_prompt);
-            }
+            if (_prompt != string.Empty)                           
+                _buffer.Append(_prompt);            
         }
 
 
