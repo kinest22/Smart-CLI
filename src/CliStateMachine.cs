@@ -116,11 +116,11 @@ namespace SmartCLI
                     break;
 
                 case (UARR, _):
-                    GetNextPrompt();
+                    GetPreviousPrompt();
                     break;
 
                 case (DARR, _):
-                    GetPreviousPrompt();
+                    GetNextPrompt();
                     break;
 
                 case (_, ALT):
