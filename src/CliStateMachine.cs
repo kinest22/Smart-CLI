@@ -89,6 +89,7 @@ namespace SmartCLI
             _prompt = string.Empty;
         }
 
+
         /// <summary>
         ///     Processes specified input.
         /// </summary>
@@ -154,18 +155,21 @@ namespace SmartCLI
             }
         }
 
+
         /// <summary>
         ///     Adds specified char to CLI input buffer.
+        ///     This method is called internally in case of any symbol entered.
         /// </summary>
-        /// <param name="ch"></param>
         private void AddToBuffer(char ch)
         {
             if (ch >= 32 && ch <= 126)
                 _buffer.Append(ch);
         }
 
+
         /// <summary>
         ///     Removes last available char from CLI input buffer.
+        ///     This method is called internally in case of BACKSPACE entered.
         /// </summary>
         private void RemoveLastFromBuffer()
         {
@@ -174,60 +178,87 @@ namespace SmartCLI
             _buffer.Remove(_buffer.Length - 1, 1);
         }
 
+
         /// <summary>
         ///     Updates state of machine depending on current CLI input buffer content. 
         ///     This method is called internally in case of BACKSPACE or any symbol entered.
         /// </summary>
         private void UpdateState()
         {
+            // defining current wildcard
             string wildcard = GetCurrentWildcard();
 
+            // following logic describes the way machine state 
+            // is changed depending on current wildcard
 
             if (TryDefineUnit(wildcard, _units, out var unit))
             {
+                // if current wildcard fully coincides any of
+                // CLI unit names currently available
+                // then either cmd-space or cmd or cmd option 
+                // is fully defined.
+
                 // redefine current collection of CLI units
                 _units = unit!.SubUnits;
 
-                // command space is now fully defined
                 if (_state == State.Started)
                 {
+                    // command space is now fully defined
                     _spaceDefined = unit;
                     _state = State.CommandSpaceDefined;
                 }
 
-                // command is now fully defined
                 else if (_state == State.CommandSpaceDefined)
                 {
+                    // command is now fully defined
                     _cmdDefined = unit;
                     _state = State.CommandDefined;
                 }
 
-                // either subcmd or option is now fully defined
                 else if (_state == State.CommandDefined)
                 {
-                    // option defined
+                    // either subcmd or option is now fully defined
                     if (unit!.IsParameter) 
                     {
+                        // option defined
                         _optDefined = unit;
                         _state = State.OptionDefined;
                     }
-                    // subcmd defined
                     else
                     {
+                        // subcmd defined
+                        // no state change here
                         _cmdDefined = unit;
                     }
-                }
-
-                else if (_state == State.OptionDefined)
-                {
-
-                }
+                }                
             }
+
             else
             {
-                _prompt = DefinePrompt(wildcard);
+                // if current wildcard fully coincides any of unit names
+                // currently available then prompt should be defined
+                // otherwise current wildcard is either value for option
+                // or argument of command
+
+                if (!TryDefinePrompt(wildcard, out _prompt))
+                {
+                    // current wildcard is not a part of any
+                    // CLI unit name currently abailable
+
+                    if (_state == State.CommandDefined)
+                    {
+                        // current wildcard is command argument value
+
+                    }
+                    else if (_state == State.OptionDefined)
+                    {
+                        // current wildcard is option value
+
+                    }
+                }
             }
         }
+
 
         /// <summary>
         ///     Accepts current prompt (if any).
@@ -238,6 +269,7 @@ namespace SmartCLI
             if (_prompt != string.Empty)                           
                 _buffer.Append(_prompt);            
         }
+
 
         /// <summary>
         ///     Changes current token start position in CLI buffer. 
@@ -250,6 +282,7 @@ namespace SmartCLI
             _wildcard = string.Empty;
             _tokenStartPosition = _buffer.Length;
         }
+
 
         /// <summary>
         ///     Switches current prompt to the next one (if any). 
@@ -264,6 +297,7 @@ namespace SmartCLI
             _prompt = next.Name[_wildcard.Length..];
         }
 
+
         /// <summary>
         ///     Switches current prompt to the previous one (if any). 
         ///     This method is called internaly in case of UP_ARROW pressed.     
@@ -277,6 +311,7 @@ namespace SmartCLI
             _prompt = prev.Name[_wildcard.Length..];
         }
 
+
         /// <summary>
         ///     Stops machine's <see cref="ConsoleKeyInfo"/> processing procedure.
         ///     This method is called internaly in case of ESCAPE pressed.  
@@ -288,6 +323,7 @@ namespace SmartCLI
                 : State.InputAborted;
         }
 
+
         /// <summary>
         ///     Stops machine's <see cref="ConsoleKeyInfo"/> processing procedure.
         ///     This method is called internaly in case of ENTER pressed.  
@@ -296,6 +332,7 @@ namespace SmartCLI
         {
             _state = State.Completed;
         }
+
 
         /// <summary>
         ///     Registers all available commands in CLI environment for futher access.
@@ -309,6 +346,7 @@ namespace SmartCLI
                     RegisterCommandHierarchy(unit.SubUnits);
         }
 
+
         /// <summary>
         ///     Gets current wildcard according to CLI input buffer contents.
         /// </summary>
@@ -320,11 +358,12 @@ namespace SmartCLI
             return _buffer.ToString(startIndex, length);
         }
 
+
         /// <summary>
         ///     Tries to define <see cref="ICliUnit"/> in specified <see cref="ICliUnit"/> collection 
         ///     according to specified wildcard.
         /// </summary>
-        /// <param name="wildcard"></param>
+        /// <param name="wildcard">Wildcard.</param>
         /// <param name="units">Collection of <see cref="ICliUnit"/> from which unit should be defined.</param>
         /// <param name="unitDefined">Pointer to <see cref="ICliUnit"/> instance for unit defined.</param>
         /// <returns>TRUE if <see cref="ICliUnit"/> was successfully defined, otherwise - FALSE</returns>
@@ -344,16 +383,23 @@ namespace SmartCLI
             }
         }
 
+
         /// <summary>
-        ///     Defines prompt according to specified wildcard.
+        ///     Tries to define prompt according to specified wildcard.
         /// </summary>
-        /// <param name="wildcard"></param>
-        /// <returns></returns>
-        private string DefinePrompt(string wildcard)
+        /// <param name="wildcard">Wildcard.</param>
+        /// <param name="prompt">Pointer to <see cref="string"/> for prompt defined </param>
+        /// <returns>TRUE if prompt was successfully defined, otherwise - FALSE</returns>
+        private bool TryDefinePrompt(string wildcard, out string prompt)
         {
             ICliUnit currentGuess = _unitsFound.GetCurrent();
-            return currentGuess.Name[wildcard.Length..];
+            if (currentGuess.Name.StartsWith(wildcard))
+            {
+                prompt = currentGuess.Name[wildcard.Length..];
+                return true;
+            }
+            prompt = string.Empty;
+            return false;
         }
     }
-
 }
