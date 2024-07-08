@@ -1,4 +1,3 @@
-﻿using SmartCLI.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -114,7 +113,7 @@ namespace SmartCLI
 
                 case (SPACE, _):
                     AddToBuffer(ch);
-                    GoToNextToken();
+                    CompleteToken();
                     break;
 
                 case (ENTR, SHFT):
@@ -235,9 +234,10 @@ namespace SmartCLI
 
             else
             {
-                // if current wildcard fully coincides any of unit names
-                // currently available then prompt should be defined
-                // otherwise current wildcard is either value for option
+                // if current wildcard does not fully coincides any of unit names
+                // currently available then prompt should be defined.
+                // if it does not coincides any of unit names
+                // then wildcard is either value for option
                 // or argument of command
 
                 if (!TryDefinePrompt(wildcard, out _prompt))
@@ -275,7 +275,7 @@ namespace SmartCLI
         ///     Changes current token start position in CLI buffer. 
         ///     This method is called internaly in case of SPACE pressed.
         /// </summary>
-        private void GoToNextToken()
+        private void CompleteToken()
         {
             _unitGuess = null;
             _prompt = string.Empty;
