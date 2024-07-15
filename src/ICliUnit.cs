@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SmartCLI.Commands
+namespace SmartCLI
 {
     /// <summary>
     ///     Represents basic CLI unit that is subject to search.
