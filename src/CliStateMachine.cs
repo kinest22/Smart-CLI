@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,6 +42,8 @@ namespace SmartCLI
 
         private readonly CliUnitSearchEngine _searchEngine;                     // CLI Search Engine used to search CLI units
         private readonly CliUnitSearchResults _unitsFound;                      // cycled collection of CLI unts found
+        private readonly Dictionary<ICliUnit, string> _opts;                    // command opstions
+        private readonly List<string> _args;                                    // command args
         private readonly StringBuilder _buffer;                                 // input buffer
 
 
@@ -63,11 +65,13 @@ namespace SmartCLI
 
         internal CliStateMachine(CliCommandHierarchy hierarchy)
         {
+            _searchEngine = CliUnitSearchEngine.Create();
+            _unitsFound = new CliUnitSearchResults();
+            _opts = new Dictionary<ICliUnit, string>();
+            _args = new List<string>();
+            _buffer = new StringBuilder();
             _wildcard = string.Empty;
             _prompt = string.Empty;
-            _buffer = new StringBuilder();
-            _unitsFound = new CliUnitSearchResults();
-            _searchEngine = CliUnitSearchEngine.Create();
             _units = hierarchy;
             RegisterCommandHierarchy(hierarchy);
         }
@@ -279,8 +283,18 @@ namespace SmartCLI
         {
             _unitGuess = null;
             _prompt = string.Empty;
-            _wildcard = string.Empty;
             _tokenStartPosition = _buffer.Length;
+            
+            if (_state == State.CommandDefined)
+            {
+                // current wildcard is command argument value
+
+            }
+            else if (_state == State.OptionDefined)
+            {
+                // current wildcard is option value
+
+            }
         }
 
 
