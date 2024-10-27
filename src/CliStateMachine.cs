@@ -59,7 +59,6 @@ namespace SmartCLI
         private ICliUnit? _cmdDefined;                                          // command already defined
         private ICliUnit? _optDefined;                                          // command option already defined
 
-        private string _wildcard;                                               // current wildcard from buffer
         private string _prompt;                                                 // current prompt according to wildcard 
 
 
@@ -70,7 +69,6 @@ namespace SmartCLI
             _opts = new Dictionary<ICliUnit, string>();
             _args = new List<string>();
             _buffer = new StringBuilder();
-            _wildcard = string.Empty;
             _prompt = string.Empty;
             _units = hierarchy;
             RegisterCommandHierarchy(hierarchy);
@@ -88,7 +86,6 @@ namespace SmartCLI
             _spaceDefined = default;
             _cmdDefined = default;
             _unitGuess = default;
-            _wildcard = string.Empty;
             _prompt = string.Empty;
         }
 
@@ -308,7 +305,8 @@ namespace SmartCLI
                 return;
             var next = _unitsFound.GetNext();
             _unitGuess = next;
-            _prompt = next.Name[_wildcard.Length..];
+            string wildcard = GetCurrentWildcard();
+            _prompt = next.Name[wildcard.Length..];
         }
 
 
@@ -322,7 +320,8 @@ namespace SmartCLI
                 return;
             var prev = _unitsFound.GetPrevious();
             _unitGuess = prev;
-            _prompt = prev.Name[_wildcard.Length..];
+            string wildcard = GetCurrentWildcard();
+            _prompt = prev.Name[wildcard.Length..];
         }
 
 
