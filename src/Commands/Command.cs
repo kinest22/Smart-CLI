@@ -15,6 +15,7 @@ namespace SmartCLI.Commands
         private readonly List<CommandParameter> _args;
         private readonly List<CommandParameter> _opts;
         private readonly List<Command> _subcmds;
+        private readonly IEnumerable<ICliUnit> _subunits;
 
 
         public Command(VoidParams @params)
@@ -24,6 +25,7 @@ namespace SmartCLI.Commands
             _args = new List<CommandParameter>();
             _opts = new List<CommandParameter>();
             _subcmds = new List<Command>();
+            _subunits = _subcmds.Cast<ICliUnit>().Concat(_opts);
         }
 
         /// <summary>
@@ -88,7 +90,7 @@ namespace SmartCLI.Commands
         internal VoidParams Params => _params;
 
         public IEnumerable<ICliUnit> SubUnits
-            => _subcmds.Cast<ICliUnit>().Concat(_opts);
+            => _subunits;
 
         public bool IsParameter 
             => false;
