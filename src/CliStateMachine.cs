@@ -71,7 +71,6 @@ namespace SmartCLI
             _buffer = new StringBuilder();
             _prompt = string.Empty;
             _units = hierarchy;
-            RegisterCommandHierarchy(hierarchy);
         }
 
 
@@ -87,6 +86,19 @@ namespace SmartCLI
             _cmdDefined = default;
             _unitGuess = default;
             _prompt = string.Empty;
+        }
+
+
+        /// <summary>
+        ///     Registers all available commands in CLI environment for futher access.
+        /// </summary>
+        /// <param name="units">Collection of <see cref="ICliUnit"/>s.</param>
+        internal void RegisterCommandHierarchy(IEnumerable<ICliUnit> units)
+        {
+            _searchEngine.RegisterUnitCollection(units);
+            foreach (var unit in units)
+                if (unit.SubUnits.Any())
+                    RegisterCommandHierarchy(unit.SubUnits);
         }
 
 
@@ -257,7 +269,6 @@ namespace SmartCLI
                     }
                 }
             }
-        }
 
 
         /// <summary>
@@ -343,19 +354,6 @@ namespace SmartCLI
         private void Complete()
         {
             _state = State.Completed;
-        }
-
-
-        /// <summary>
-        ///     Registers all available commands in CLI environment for futher access.
-        /// </summary>
-        /// <param name="units">Collection of <see cref="ICliUnit"/>s.</param>
-        private void RegisterCommandHierarchy(IEnumerable<ICliUnit> units)
-        {
-            _searchEngine.RegisterUnitCollection(units);
-            foreach (var unit in units)
-                if (unit.SubUnits.Any())
-                    RegisterCommandHierarchy(unit.SubUnits);
         }
 
 
