@@ -405,6 +405,12 @@ namespace SmartCLI
         /// <returns>TRUE if prompt was successfully defined, otherwise - FALSE</returns>
         private bool TryDefinePrompt(string wildcard, out string prompt)
         {
+            if (!_unitsFound.Any())
+            {
+                prompt = string.Empty;
+                return false;
+            }
+
             ICliUnit currentGuess = _unitsFound.GetCurrent();
             if (currentGuess.Name.StartsWith(wildcard))
             {
