@@ -22,7 +22,10 @@ namespace SmartCLI.Commands
         /// <returns><see cref="TConfigurer"/></returns>
         public TConfigurer WithName(string name)
         {
-            _param.Name = name.ToUpper();
+            if (_param.IsOptional)
+                _param.Name = $"--{name.Replace(' ', '-')}";
+            else
+                _param.Name = name.ToUpper();
             return _configurer;
         }
 
