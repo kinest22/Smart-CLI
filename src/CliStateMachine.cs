@@ -231,13 +231,12 @@ namespace SmartCLI
                         _cmdDefined = unit;
                     }
                 }                
+
+                CompleteToken();
             }
 
-            else
-            {
-                // if current wildcard does not fully coincides any of unit names
-                // currently available then prompt should be defined.
-                // if it does not coincides any of unit names
+            // prompt should be defined.
+            // if input does not coincides any of unit names
                 // then wildcard is either value for option
                 // or argument of command
 
