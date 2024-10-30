@@ -18,6 +18,7 @@ namespace SmartCLI
             Started,
             CommandSpaceDefined,
             CommandDefined,
+            PendingArguments,
             OptionDefined,
             Completed,
             InputAborted,
