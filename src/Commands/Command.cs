@@ -8,7 +8,7 @@ namespace SmartCLI.Commands
     /// <summary>
     ///     Represents console command.
     /// </summary>
-    public class Command : ICliCommand<CommandParameter>
+    public class Command : ICliUnit
     {
         private static int _cmdCounter = 1;
         private readonly VoidParams _params;

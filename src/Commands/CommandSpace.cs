@@ -43,7 +43,7 @@ namespace SmartCLI.Commands
         /// <summary>
         /// 
         /// </summary>
-        public IEnumerable<ICliUnit> SubUnits => (IEnumerable<ICliUnit>)_commands;
+        public IEnumerable<ICliUnit> SubUnits => _commands;
 
         /// <summary>
         /// 
