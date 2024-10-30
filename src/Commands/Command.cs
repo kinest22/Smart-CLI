@@ -8,7 +8,7 @@ namespace SmartCLI.Commands
     /// <summary>
     ///     Represents console command.
     /// </summary>
-    public class Command : ICliUnit
+    public class Command : ICliCommand<CommandParameter>
     {
         private static int _cmdCounter = 1;
         private readonly VoidParams _params;
@@ -89,11 +89,9 @@ namespace SmartCLI.Commands
         /// </summary>
         internal VoidParams Params => _params;
 
-        public IEnumerable<ICliUnit> SubUnits
-            => _subunits;
+        public IEnumerable<ICliUnit> SubUnits => _subunits;
 
-        public bool IsParameter 
-            => false;
+        public bool IsParameter => false;
 
 
 

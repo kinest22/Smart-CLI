@@ -40,12 +40,15 @@ namespace SmartCLI.Commands
         /// </summary>
         public bool IsHidden { get; internal set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public IEnumerable<ICliUnit> SubUnits => (IEnumerable<ICliUnit>)_commands;
 
-        public IEnumerable<ICliUnit> SubUnits 
-            => _commands;
-
-        public bool IsParameter 
-            => false;
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsParameter => false;
 
         /// <summary>
         ///     Configures new <see cref="CommandSpace"/> using <see cref="CommandSpaceConfigurer"/>.
