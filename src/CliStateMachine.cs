@@ -1,4 +1,3 @@
-﻿using SmartCLI.Commands;
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +56,7 @@ namespace SmartCLI
 
 
         private ICliUnit? _spaceDefined;                                        // command space already defined
-        private Command? _cmdDefined;                                           // command already defined
+        private ICliUnit? _cmdDefined;                                          // command already defined
         private ICliUnit? _optDefined;                                          // command option already defined
 
         private string _prompt;                                                 // current prompt according to wildcard 
@@ -223,7 +222,7 @@ namespace SmartCLI
                 else if (_state == State.CommandSpaceDefined)
                 {
                     // command is now fully defined
-                    _cmdDefined = (Command)unit;
+                    _cmdDefined = unit;
                     _state = State.CommandDefined;
                 }
 
@@ -240,7 +239,7 @@ namespace SmartCLI
                     {
                         // subcmd defined
                         // no state change here
-                        _cmdDefined = (Command)unit;
+                        _cmdDefined = unit;
                     }
                 }                
 

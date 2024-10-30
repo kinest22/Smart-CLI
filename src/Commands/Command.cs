@@ -93,6 +93,9 @@ namespace SmartCLI.Commands
 
         public bool IsParameter => false;
 
+        public bool IsRequired => false;
+
+        public bool IsOptional => false;
 
 
 

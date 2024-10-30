@@ -17,8 +17,26 @@ namespace SmartCLI
         /// </summary>
         public bool IsHidden { get; }
          
+        /// <summary>
+        ///     Collection of subunits.
+        /// </summary>
         public IEnumerable<ICliUnit> SubUnits { get; }
 
+        /// <summary>
+        ///     Identifies whether the CLI unit is command parameter.
+        /// </summary>
         public bool IsParameter { get; }
+
+        /// <summary>
+        ///     Identifies whether the CLI unit is command argument.
+        ///     Used only when CLI unit is parameter.
+        /// </summary>
+        public bool IsRequired { get; }
+
+        /// <summary>
+        ///     Identifies whether the CLI unit is command option.
+        ///     Used only when CLI unit is parameter.
+        /// </summary>
+        public bool IsOptional { get; }
     }
 }

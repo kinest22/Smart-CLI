@@ -1,8 +1,4 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartCLI.Commands
 {
@@ -49,6 +45,10 @@ namespace SmartCLI.Commands
         /// 
         /// </summary>
         public bool IsParameter => false;
+
+        public bool IsRequired => false;
+
+        public bool IsOptional => false;
 
         /// <summary>
         ///     Configures new <see cref="CommandSpace"/> using <see cref="CommandSpaceConfigurer"/>.

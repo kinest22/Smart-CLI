@@ -15,7 +15,8 @@ namespace SmartCLI.Commands
         public CommandParameter(Delegate valueProvider, bool isOptional)
         {
             _valueProvider = valueProvider;
-            IsOptional= isOptional;
+            IsOptional = isOptional;
+            IsRequired = !isOptional;
             if (IsOptional)
             {
                 OptCounter++;
@@ -36,11 +37,7 @@ namespace SmartCLI.Commands
         ///     Option counter.
         /// </summary>
         internal static int OptCounter { get; private set; } = 0;
-
-        /// <summary>
-        ///     Defines if command paramter is optional. False for command argument, true for command option.
-        /// </summary>
-        public bool IsOptional { get; internal set; }
+        
 
         /// <summary>
         ///     Identifies whether the parameter is hidden. Applied to option paramteres only. Hidden options do not appear when help is used.
@@ -82,8 +79,17 @@ namespace SmartCLI.Commands
             => Enumerable.Empty<ICliUnit>();
 
 
-        public bool IsParameter 
-            => true;
+        public bool IsParameter => true;
+
+        /// <summary>
+        ///     Defines if command paramter is required. True for command argument, false for command option.
+        /// </summary>
+        public bool IsRequired { get; internal set; }
+
+        /// <summary>
+        ///     Defines if command paramter is optional. False for command argument, true for command option.
+        /// </summary>
+        public bool IsOptional { get; internal set; }
 
         /// <summary>
         ///     Accepts parser (visitor) to get parsed value.
