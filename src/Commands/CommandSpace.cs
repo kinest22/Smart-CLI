@@ -41,6 +41,8 @@ namespace SmartCLI.Commands
         /// </summary>
         public IEnumerable<ICliUnit> SubUnits => _commands;
 
+        public ICliUnit? ParentUnit { get; internal set; } = null;
+
         /// <summary>
         /// 
         /// </summary>

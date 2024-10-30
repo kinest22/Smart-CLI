@@ -51,7 +51,7 @@ namespace SmartCLI.Commands
         /// <returns><see cref="CommandConfigurer{TParams}"/></returns>
         public CommandConfigurer<TParams> IsSubcommandOf(Command parentCmd)
         {
-            _cmd.ParentCommand = parentCmd;
+            _cmd.ParentUnit = parentCmd;
             parentCmd.AddSubcommand(_cmd);
             return this;
         }
@@ -99,7 +99,9 @@ namespace SmartCLI.Commands
         {
             var setDelegate = GetSetter(argSelection);
             var configurer = new NumericArgumentConfigurer<TArg>(setDelegate, false);
-            _cmd.AddArgument(configurer.GetParameter());
+            var parameter = configurer.GetParameter();
+            _cmd.AddArgument(parameter);
+            parameter.ParentUnit = _cmd;
             return configurer;
         }
 
@@ -111,7 +113,9 @@ namespace SmartCLI.Commands
         {
             var setDelegate = GetSetter(argSelection);
             var configurer = new DateTimeArgumentConfigurer(setDelegate, false);
-            _cmd.AddArgument(configurer.GetParameter());
+            var parameter = configurer.GetParameter();
+            _cmd.AddArgument(parameter);
+            parameter.ParentUnit = _cmd;
             return configurer;
         }
 
@@ -124,7 +128,9 @@ namespace SmartCLI.Commands
         {
             var setDelegate = GetSetter(argSelection);
             var configurer = new StringArgumentConfigurer(setDelegate);
-            _cmd.AddArgument(configurer.GetParameter());
+            var parameter = configurer.GetParameter();
+            _cmd.AddArgument(parameter);
+            parameter.ParentUnit = _cmd;
             return configurer;
         }
 
@@ -138,7 +144,9 @@ namespace SmartCLI.Commands
         {
             var setDelegate = GetSetter(argSelection);
             var configurer = new CollectionArgumentConfigurer<TArg>(setDelegate, false);
-            _cmd.AddArgument(configurer.GetParameter());
+            var parameter = configurer.GetParameter();
+            _cmd.AddArgument(parameter);
+            parameter.ParentUnit = _cmd;
             return configurer;
         }
 
@@ -150,7 +158,9 @@ namespace SmartCLI.Commands
         {
             var setDelegate = GetSetter(optSelection);
             var configurer = new FlagOptionConfigurer(setDelegate);
-            _cmd.AddOption(configurer.GetParameter());
+            var parameter = configurer.GetParameter();
+            _cmd.AddOption(parameter);
+            parameter.ParentUnit = _cmd;
             return configurer;
         }
 
@@ -165,7 +175,9 @@ namespace SmartCLI.Commands
         {
             var setDelegate = GetSetter(optSelection);
             var configurer = new NumericOptionConfigurer<TOpt>(setDelegate, true);
-            _cmd.AddOption(configurer.GetParameter());
+            var parameter = configurer.GetParameter();
+            _cmd.AddOption(parameter);
+            parameter.ParentUnit = _cmd;
             return configurer;
         }
 
@@ -177,7 +189,9 @@ namespace SmartCLI.Commands
         {
             var setDelegate = GetSetter(argSelection);
             var configurer = new DateTimeOptionConfigurer(setDelegate, true);
-            _cmd.AddOption(configurer.GetParameter());
+            var parameter = configurer.GetParameter();
+            _cmd.AddOption(parameter);
+            parameter.ParentUnit = _cmd;
             return configurer;
         }
 
@@ -191,7 +205,9 @@ namespace SmartCLI.Commands
         {
             var setDelegate = GetSetter(argSelection);
             var configurer = new CollectionOptionConfigurer<TArg>(setDelegate, false);
-            _cmd.AddOption(configurer.GetParameter());
+            var parameter = configurer.GetParameter();
+            _cmd.AddOption(parameter);
+            parameter.ParentUnit = _cmd;
             return configurer;
         }
 

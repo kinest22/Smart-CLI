@@ -17,7 +17,6 @@ namespace SmartCLI.Commands
         private readonly List<Command> _subcmds;
         private readonly IEnumerable<ICliUnit> _subunits;
 
-
         public Command(VoidParams @params)
         {
             _cmdCounter++;
@@ -62,7 +61,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Command to which the current command is considered to be a child command.
         /// </summary>
-        public Command? ParentCommand { get; internal set; }
+        public ICliUnit? ParentUnit { get; internal set; }
 
         /// <summary>
         ///     Command space to which this command belongs to.
@@ -89,7 +88,7 @@ namespace SmartCLI.Commands
         /// </summary>
         internal VoidParams Params => _params;
 
-        public IEnumerable<ICliUnit> SubUnits => _subunits;
+        public IEnumerable<ICliUnit> SubUnits => _subunits;        
 
         public bool IsParameter => false;
 

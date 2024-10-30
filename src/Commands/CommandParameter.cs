@@ -36,8 +36,7 @@ namespace SmartCLI.Commands
         /// <summary>
         ///     Option counter.
         /// </summary>
-        internal static int OptCounter { get; private set; } = 0;
-        
+        internal static int OptCounter { get; private set; } = 0;        
 
         /// <summary>
         ///     Identifies whether the parameter is hidden. Applied to option paramteres only. Hidden options do not appear when help is used.
@@ -74,11 +73,19 @@ namespace SmartCLI.Commands
         /// </summary>
         public NumberStyles? NumberStyle { get; internal set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public IEnumerable<ICliUnit> SubUnits => Enumerable.Empty<ICliUnit>();
 
-        public IEnumerable<ICliUnit> SubUnits 
-            => Enumerable.Empty<ICliUnit>();
+        /// <summary>
+        /// 
+        /// </summary>
+        public ICliUnit? ParentUnit { get; internal set; }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsParameter => true;
 
         /// <summary>

@@ -53,7 +53,7 @@ namespace SmartCLI.Commands
             configAction.Invoke(cmdConfigurer);
             var cmd = cmdConfigurer.GetCommand();
             cmd.CommandSpace = _cmdspace;
-            if (cmd.ParentCommand is null)
+            if (cmd.ParentUnit is null)
                 _cmdspace.AddCommand(cmd);
             return cmd;
         }

@@ -23,6 +23,11 @@ namespace SmartCLI
         public IEnumerable<ICliUnit> SubUnits { get; }
 
         /// <summary>
+        ///     Parent CLI unit.
+        /// </summary>
+        public ICliUnit? ParentUnit { get; }
+
+        /// <summary>
         ///     Identifies whether the CLI unit is command parameter.
         /// </summary>
         public bool IsParameter { get; }
