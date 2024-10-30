@@ -55,7 +55,6 @@ namespace SmartCLI
         private int _tokenStartPosition;                                        // pending token start position      
 
 
-        private ICliUnit? _unitGuess;                                           // current CLI unit guess
         private ICliUnit? _spaceDefined;                                        // command space already defined
         private ICliCommand<ICliUnit>? _cmdDefined;                             // command already defined
         private ICliUnit? _optDefined;                                          // command option already defined
@@ -85,7 +84,6 @@ namespace SmartCLI
             _tokenStartPosition = 0;
             _spaceDefined = default;
             _cmdDefined = default;
-            _unitGuess = default;
             _prompt = string.Empty;
         }
 
@@ -289,7 +287,6 @@ namespace SmartCLI
         /// </summary>
         private void CompleteToken()
         {
-            _unitGuess = null;
             _prompt = string.Empty;
             _tokenStartPosition = _buffer.Length;
             
@@ -315,7 +312,6 @@ namespace SmartCLI
             if (_unitsFound.Count <= 1)
                 return;
             var next = _unitsFound.GetNext();
-            _unitGuess = next;
             string wildcard = GetCurrentWildcard();
             _prompt = next.Name[wildcard.Length..];
         }
@@ -330,7 +326,6 @@ namespace SmartCLI
             if (_unitsFound.Count <= 1)
                 return;
             var prev = _unitsFound.GetPrevious();
-            _unitGuess = prev;
             string wildcard = GetCurrentWildcard();
             _prompt = prev.Name[wildcard.Length..];
         }
