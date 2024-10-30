@@ -101,7 +101,7 @@ namespace SmartCLI
         ///     Fetches all units from all terminal <see cref="CliUnitTrie"/>s of specified trie.
         /// </summary>
         /// <returns>Number of CLI unts found.</returns>
-        private int FetchTerminalUnits(CliUnitTrie trie, in CliUnitSearchResults found)
+        private static int FetchTerminalUnits(CliUnitTrie trie, in CliUnitSearchResults found)
         {
             if (trie.IsTerminal)
                 found.Add(trie.Unit!);
